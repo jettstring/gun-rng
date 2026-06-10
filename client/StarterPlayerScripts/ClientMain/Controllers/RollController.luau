@@ -692,6 +692,12 @@ local function displayRollSpin(rollData: RollData, rollResults: {ColumnResults},
 		print("Roll finished")
 		RollController.Rolling = false
 	end))
+	
+	
+	-- Fire Onboarding Step
+	if RollController.Controllers.OnboardingController.OnboardingComplete == false then
+		RollController.Controllers.OnboardingController:OnGameEvent("first_roll")
+	end
 end
 
 local function updateAutoRollState(isAutoRolling: boolean)
@@ -778,6 +784,18 @@ local function rollDataUpdated(payload: {SpecialRollData: {NextSpecialRoll: stri
 	end
 end
 
+local function _bindOnboardingSteps()
+	local onboardingController = RollController.Controllers.OnboardingController
+	
+	local rollSteps = { "first_roll", "second_roll", "third_roll" }
+	for _, stepName in rollSteps do
+		onboardingController.StepEventFunctions[stepName] = function()
+			-- TODO: create a pointing icon to the roll button
+			print("PRESS THE ROLL BUTTTON!")
+		end
+	end
+end
+
 --------------------------------------------------
 -- PUBLIC FUNCTIONS --
 --------------------------------------------------
@@ -809,6 +827,7 @@ end
 function RollController:Init(controllers)
 	self.Controllers = controllers
 	
+	_bindOnboardingSteps()
 	
 	hideButton.Activated:Connect(function()
 		self:HideRollDisplay()

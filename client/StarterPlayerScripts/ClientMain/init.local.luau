@@ -20,6 +20,7 @@ local loadOrder = {
 	{"ConfettiEffect", require(Controllers.ConfettiEffect) },
 	{"CloverEffect", require(Controllers.CloverEffect)},
 	{"SettingsController", require(Controllers.SettingsController) },
+	{"OnboardingController", require(Controllers.OnboardingController) },
 }
 
 -- Build named lookup

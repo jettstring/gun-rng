@@ -20,12 +20,10 @@ local tree: SkillTree.NestedSkillDefinitions = {
 			tagsMultiplier = 0,
 			moneyMultiplier = 1,
 			offlineMoneyMultiplier = 1,
-
 			-- Rolling related
 			luck = 1,
 			rollSpeed = 1,
 			bonusChance = 0.1,
-
 		},
 		unlocks = {
 			["Auto Roll"] = {

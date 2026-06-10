@@ -176,6 +176,14 @@
                       "filePaths": [
                         "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/SettingsController.luau"
                       ]
+                    },
+                    {
+                      "name": "OnboardingController",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/OnboardingController/init.luau"
+                      ]
                     }
                   ]
                 }
@@ -511,196 +519,6 @@
               "pluginManaged": true,
               "filePaths": [
                 "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Modules/SliderBar.luau"
-              ]
-            }
-          ]
-        },
-        {
-          "name": "GameAssets",
-          "className": "Folder",
-          "pluginManaged": true,
-          "children": [
-            {
-              "name": "OnboardingAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "OnboardingSteps",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/OnboardingAssets/OnboardingSteps.luau"
-                  ]
-                },
-                {
-                  "name": "OnboardingSignals",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/OnboardingAssets/OnboardingSignals.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "RollAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "LuckRolls",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/RollAssets/LuckRolls.luau"
-                  ]
-                },
-                {
-                  "name": "SpecialRollDefinitions",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/RollAssets/SpecialRollDefinitions.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "EnemyAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "EnemyDefinitions",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/EnemyAssets/EnemyDefinitions.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "ZoneAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "ZoneDefinitions",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/ZoneAssets/ZoneDefinitions.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "ItemAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "ItemDefinitions",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/ItemAssets/ItemDefinitions.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "RebirthAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "RebirthRewards",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/RebirthAssets/RebirthRewards.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "IndexAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "IndexRewards",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/IndexAssets/IndexRewards.luau"
-                  ]
-                },
-                {
-                  "name": "RewardTypeMetadata",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/IndexAssets/RewardTypeMetadata.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "WeaponAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "WeaponDefinitions",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/WeaponAssets/WeaponDefinitions.luau"
-                  ]
-                },
-                {
-                  "name": "MutationDefinitions",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/WeaponAssets/MutationDefinitions.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "SettingsAssets",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "SettingsDefinitions",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/SettingsAssets/SettingsDefinitions.luau"
-                  ]
-                },
-                {
-                  "name": "ClientSettingHandlers",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/SettingsAssets/ClientSettingHandlers.luau"
-                  ]
-                },
-                {
-                  "name": "ServerSettingHandlers",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/SettingsAssets/ServerSettingHandlers.luau"
-                  ]
-                }
               ]
             }
           ]
@@ -2632,6 +2450,188 @@
               ]
             }
           ]
+        },
+        {
+          "name": "GameAssets",
+          "className": "Folder",
+          "pluginManaged": true,
+          "children": [
+            {
+              "name": "WeaponAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "WeaponDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/WeaponAssets/WeaponDefinitions.luau"
+                  ]
+                },
+                {
+                  "name": "MutationDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/WeaponAssets/MutationDefinitions.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "RollAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "LuckRolls",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/RollAssets/LuckRolls.luau"
+                  ]
+                },
+                {
+                  "name": "SpecialRollDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/RollAssets/SpecialRollDefinitions.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "EnemyAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "EnemyDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/EnemyAssets/EnemyDefinitions.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "ZoneAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "ZoneDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/ZoneAssets/ZoneDefinitions.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "ItemAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "ItemDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/ItemAssets/ItemDefinitions.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "RebirthAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "RebirthRewards",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/RebirthAssets/RebirthRewards.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "IndexAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "IndexRewards",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/IndexAssets/IndexRewards.luau"
+                  ]
+                },
+                {
+                  "name": "RewardTypeMetadata",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/IndexAssets/RewardTypeMetadata.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "SettingsAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "SettingsDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/SettingsAssets/SettingsDefinitions.luau"
+                  ]
+                },
+                {
+                  "name": "ClientSettingHandlers",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/SettingsAssets/ClientSettingHandlers.luau"
+                  ]
+                },
+                {
+                  "name": "ServerSettingHandlers",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/SettingsAssets/ServerSettingHandlers.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "OnboardingAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "OnboardingSteps",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/OnboardingAssets/OnboardingSteps.luau"
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -2796,6 +2796,14 @@
                   "pluginManaged": true,
                   "filePaths": [
                     "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/server/ServerScriptService/ServerMain/Services/SettingsService.luau"
+                  ]
+                },
+                {
+                  "name": "OnboardingService",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/server/ServerScriptService/ServerMain/Services/OnboardingService.luau"
                   ]
                 }
               ]

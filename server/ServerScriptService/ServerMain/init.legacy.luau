@@ -15,6 +15,7 @@ local loadOrder = {
 	{"RebirthService", require(Services.RebirthService) },
 	{"IndexService", require(Services.IndexService) },
 	{"SettingsService", require(Services.SettingsService) },
+	{"OnboardingService", require(Services.OnboardingService) },
 }
 
 -- Build named lookup

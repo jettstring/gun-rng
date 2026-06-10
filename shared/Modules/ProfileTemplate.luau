@@ -41,14 +41,9 @@ return {
 	},
 	
 	Settings = {},
-	
-	Onboarding = {
-		CompletedOnboarding = false,
-		CurrentStep = 1
-	},
 
 	-- Persisted data -- 
-	LastSessionTimestamp = 0,
+	LastSessionTimestamp = nil,
 	Stats = {
 		Playtime = 0,
 	},

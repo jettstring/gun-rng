@@ -4,7 +4,7 @@ local Players = game:GetService("Players")
 --------------------------------------------------
 -- DEPENDENCIES -- 
 --------------------------------------------------
-local player = Players.LocalPlayer
+local player = Players.LocalPlayer 
 local playerGui = player.PlayerGui
 
 -- UI
@@ -148,9 +148,6 @@ local function getSettingsData()
 end
 
 
-
-
-
 local function setupOptionFrame(optionName: string, optionDef: SettingOption): Frame
 	local optionTemplates = settingsList.UIListLayout.OptionTemplates
 	
@@ -214,17 +211,19 @@ local function setupOptionFrame(optionName: string, optionDef: SettingOption): F
 		end)	
 		
 		luckTextBox.FocusLost:Connect(function()
-			local enabled, luck = getCustomLuckValues()
+			local enabled, _ = getCustomLuckValues()
+			local luck = tonumber(luckTextBox.Text) or 1
 			remotes.ChangeSettingValue:FireServer(optionName, {
-				enabled = not enabled,
+				enabled = enabled,
 				luck = luck,
 			})
 		end)
 		
 		luckTextBox.ReturnPressedFromOnScreenKeyboard:Connect(function()
-			local enabled, luck = getCustomLuckValues()
+			local enabled, _ = getCustomLuckValues()
+			local luck = tonumber(luckTextBox.Text) or 1
 			remotes.ChangeSettingValue:FireServer(optionName, {
-				enabled = not enabled,
+				enabled = enabled,
 				luck = luck,
 			})
 			

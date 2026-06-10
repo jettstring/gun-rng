@@ -34,11 +34,11 @@ DataService.Signals = {
 	DataLoaded = Signal.new(),
 }
 
-DataService.MainKey = "DEV-14"
+DataService.MainKey = "DEV-15"
 DataService.PurchaseKey = "PURCHASES-01"
 
 DataService.DATA_CONFIG = {
-	Mock = false, 
+	Mock = true, 
 }
 
 DataService.PlayerStore = ProfileStore.New(DataService.MainKey, PROFILE_TEMPLATE)

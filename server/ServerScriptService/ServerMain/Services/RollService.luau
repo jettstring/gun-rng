@@ -104,6 +104,11 @@ function RollService:Roll(player: Player)
 	local playerLuck: number, luckTable: LuckTable = self:GetPlayerLuck(player)
 	print("Total Luck", playerLuck, "luckTable", luckTable)
 	
+	-- get luck override
+	if profile.Settings["CustomLuck"] and profile.Settings["CustomLuck"].enabled and profile.Settings["CustomLuck"].luck > 1 then
+		playerLuck = math.max(profile.Settings["CustomLuck"].luck, 1)
+	end
+	
 	-- mutations luck table
 	local mutationRollLuck: {[WeaponMutation]: number} = self:GetPlayerMutationLuckTable(player)
 	print("Mutations Luck table: ", mutationRollLuck)
