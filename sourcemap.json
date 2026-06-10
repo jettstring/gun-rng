@@ -160,6 +160,22 @@
                       "filePaths": [
                         "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/ConfettiEffect.luau"
                       ]
+                    },
+                    {
+                      "name": "CloverEffect",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/CloverEffect.luau"
+                      ]
+                    },
+                    {
+                      "name": "SettingsController",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/SettingsController.luau"
+                      ]
                     }
                   ]
                 }
@@ -365,14 +381,6 @@
               ]
             },
             {
-              "name": "SettingsDefinitions",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/SettingsDefinitions.luau"
-              ]
-            },
-            {
               "name": "GraphTheory",
               "className": "Folder",
               "pluginManaged": true,
@@ -440,6 +448,14 @@
                     "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/Skills/SkillDefinitions.luau"
                   ]
                 }
+              ]
+            },
+            {
+              "name": "SettingsUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/SettingsUtil.luau"
               ]
             }
           ]
@@ -652,6 +668,37 @@
                   "pluginManaged": true,
                   "filePaths": [
                     "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/WeaponAssets/MutationDefinitions.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "SettingsAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "SettingsDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/SettingsAssets/SettingsDefinitions.luau"
+                  ]
+                },
+                {
+                  "name": "ClientSettingHandlers",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/SettingsAssets/ClientSettingHandlers.luau"
+                  ]
+                },
+                {
+                  "name": "ServerSettingHandlers",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/SettingsAssets/ServerSettingHandlers.luau"
                   ]
                 }
               ]
@@ -2093,6 +2140,14 @@
               ]
             },
             {
+              "name": "LingerEffect",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/LingerEffect.luau"
+              ]
+            },
+            {
               "name": "FlyingItem",
               "className": "ModuleScript",
               "pluginManaged": true,
@@ -2133,75 +2188,10 @@
               ]
             },
             {
-              "name": "LingerEffect",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/LingerEffect.luau"
-              ]
-            },
-            {
               "name": "_Index",
               "className": "Folder",
               "pluginManaged": true,
               "children": [
-                {
-                  "name": "sleitnick_observers@0.3.4",
-                  "className": "Folder",
-                  "pluginManaged": true,
-                  "children": [
-                    {
-                      "name": "observers",
-                      "className": "ModuleScript",
-                      "pluginManaged": true,
-                      "filePaths": [
-                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/init.luau"
-                      ],
-                      "children": [
-                        {
-                          "name": "observeAttribute",
-                          "className": "ModuleScript",
-                          "pluginManaged": true,
-                          "filePaths": [
-                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observeAttribute.luau"
-                          ]
-                        },
-                        {
-                          "name": "observeCharacter",
-                          "className": "ModuleScript",
-                          "pluginManaged": true,
-                          "filePaths": [
-                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observeCharacter.luau"
-                          ]
-                        },
-                        {
-                          "name": "observePlayer",
-                          "className": "ModuleScript",
-                          "pluginManaged": true,
-                          "filePaths": [
-                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observePlayer.luau"
-                          ]
-                        },
-                        {
-                          "name": "observeProperty",
-                          "className": "ModuleScript",
-                          "pluginManaged": true,
-                          "filePaths": [
-                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observeProperty.luau"
-                          ]
-                        },
-                        {
-                          "name": "observeTag",
-                          "className": "ModuleScript",
-                          "pluginManaged": true,
-                          "filePaths": [
-                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observeTag.luau"
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
                 {
                   "name": "evaera_promise@4.0.0",
                   "className": "Folder",
@@ -2576,6 +2566,63 @@
                           "pluginManaged": true,
                           "filePaths": [
                             "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_timer@1.1.2/timer/init.spec.luau"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "sleitnick_observers@0.3.4",
+                  "className": "Folder",
+                  "pluginManaged": true,
+                  "children": [
+                    {
+                      "name": "observers",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/init.luau"
+                      ],
+                      "children": [
+                        {
+                          "name": "observeAttribute",
+                          "className": "ModuleScript",
+                          "pluginManaged": true,
+                          "filePaths": [
+                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observeAttribute.luau"
+                          ]
+                        },
+                        {
+                          "name": "observeCharacter",
+                          "className": "ModuleScript",
+                          "pluginManaged": true,
+                          "filePaths": [
+                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observeCharacter.luau"
+                          ]
+                        },
+                        {
+                          "name": "observePlayer",
+                          "className": "ModuleScript",
+                          "pluginManaged": true,
+                          "filePaths": [
+                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observePlayer.luau"
+                          ]
+                        },
+                        {
+                          "name": "observeProperty",
+                          "className": "ModuleScript",
+                          "pluginManaged": true,
+                          "filePaths": [
+                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observeProperty.luau"
+                          ]
+                        },
+                        {
+                          "name": "observeTag",
+                          "className": "ModuleScript",
+                          "pluginManaged": true,
+                          "filePaths": [
+                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Packages/_Index/sleitnick_observers@0.3.4/observers/observeTag.luau"
                           ]
                         }
                       ]

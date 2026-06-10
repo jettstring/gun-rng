@@ -48,6 +48,7 @@ for skillId, skill in knownSkillTree.skills do
 end
 
 local MAGNET_RANGE_ATTRIBUTE = "magnetRange"
+local AUTO_AIM_HEADSHOT_CHANCE_ATTRIBUTE = "autoAimHeadshotChance"
 
 --------------------------------------------------
 -- PRIVATE FUNCTIONS --
@@ -282,6 +283,15 @@ function UpgradeService:SyncPlayerMagnetRange(player: Player)
 	setPlayerMagnetRangeAttribute(player, self:GetMagnetRange(player))
 end
 
+function UpgradeService:SyncPlayerAutoAimHeadshotChance(player: Player)
+	local chance = self:GetAutoAimHeadshotChance(player)
+	if typeof(chance) == "number" and chance > 0 then
+		player:SetAttribute(AUTO_AIM_HEADSHOT_CHANCE_ATTRIBUTE, math.clamp(chance, 0, 1))
+	else
+		player:SetAttribute(AUTO_AIM_HEADSHOT_CHANCE_ATTRIBUTE, nil)
+	end
+end
+
 function UpgradeService:GetSpecialRoll(player, specialRollName: string): SpecialRollDefinitions.SpecialRoll?
 	if not SpecialRollDefinitions[specialRollName] then warn("Warning: Invalid special roll name: " .. specialRollName) return nil end
 	if specialRollName == "Gold" then
@@ -319,11 +329,12 @@ end
 function UpgradeService:GetItemDropChance(player, itemName: string): number?
 	return getPlayerUpgradeStat(self, player, itemName)
 end
-
 function UpgradeService:GetComponentDropChance(player: Player, component: string): number?
 	return getPlayerUpgradeStat(self, player, component)
 end
-
+function UpgradeService:GetAutoAimHeadshotChance(player): number?
+	return getPlayerUpgradeStat(self, player, "AutoAimHeadshot")
+end
 function UpgradeService:ResetPlayerUpgrades(player: Player): (boolean, string)
 	local profile = self:GetProfile(player)
 	if not profile then
@@ -335,6 +346,7 @@ function UpgradeService:ResetPlayerUpgrades(player: Player): (boolean, string)
 
 	remotes.OwnedSkillsChanged:FireClient(player, {})
 	self:SyncPlayerMagnetRange(player)
+	self:SyncPlayerAutoAimHeadshotChance(player)
 	if self.Services.CharacterService then
 		self.Services.CharacterService:SyncPlayerWalkSpeed(player)
 	end
@@ -404,6 +416,10 @@ function UpgradeService:UnlockSkill(player: Player, skillId: any): UnlockSkillRe
 	local stats = tree:GetOwnedStats()
 	setPlayerMagnetRangeAttribute(player, getResolvedStat(stats, "magnetRange") :: number)
 
+	if skill.stats.AutoAimHeadshot ~= nil then
+		self:SyncPlayerAutoAimHeadshotChance(player)
+	end
+
 	if skill.stats.walkSpeed ~= nil and self.Services.CharacterService then
 		self.Services.CharacterService:SyncPlayerWalkSpeed(player)
 	end
@@ -463,11 +479,13 @@ function UpgradeService:Start()
 
 	self.Services.DataService.Signals.DataLoaded:Connect(function(player: Player)
 		self:SyncPlayerMagnetRange(player)
+		self:SyncPlayerAutoAimHeadshotChance(player)
 	end)
 
 	for _, player in Players:GetPlayers() do
 		if player:GetAttribute("Loaded") == true then
 			self:SyncPlayerMagnetRange(player)
+			self:SyncPlayerAutoAimHeadshotChance(player)
 		end
 	end
 end

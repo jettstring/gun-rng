@@ -248,7 +248,6 @@ local function _setupUI()
 		remotes.ClaimIndexMilestone:FireServer(selectedMutation)
 	end)
 	
-	
 	-- mutation sort buttons
 	for _, mutationButton in mutationButtons:GetChildren() do
 		if not mutationButton:IsA("ImageButton") then continue end

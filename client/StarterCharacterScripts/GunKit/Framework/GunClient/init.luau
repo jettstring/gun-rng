@@ -17,7 +17,6 @@ local WeaponDefinitions = require(
 )
 
 local DEFAULT_TIME_BETWEEN_SHOTS = 1 / 4
--- Stagger same-type guns across one fire interval.
 local ALTERNATING_SHOOTING_ENABLED = true
 local DEFAULT_ANCHOR_CAMERA_MAX_YAW = math.rad(35)
 local DEFAULT_ANCHOR_CAMERA_MAX_PITCH = math.rad(20)
@@ -52,6 +51,7 @@ local SMART_CROSSHAIR_CONTAINER_NAME = "HitmarkerContainer"
 local SMART_CROSSHAIR_TEMPLATE_NAME = "Crosshair"
 local SMART_CROSSHAIR_VALID_TARGET_COLOR = Color3.fromRGB(255, 55, 55)
 local SMART_CROSSHAIR_HEADSHOT_TARGET_COLOR = Color3.fromRGB(0, 0, 0)
+local AUTO_AIM_HEADSHOT_CHANCE_ATTRIBUTE = "autoAimHeadshotChance"
 local TARGET_HIGHLIGHT_TEMPLATE_NAME = "TargetHighlight"
 local TARGET_HIGHLIGHT_FOOTPRINT_SCALE = 1.15
 local POSITIONING_FOLDER_NAME = "GunPositioning"
@@ -754,6 +754,8 @@ function module.new(
 	self.autoAimCache = if self.autoAimEnabled then EnemyTargeting.acquireCache(self.autoAimTag) else nil
 	self.currentAutoAimTarget = nil
 	self.currentAutoAimIsHeadshot = false
+	self.rolledHeadshotTarget = nil
+	self.rolledHeadshot = false
 	self.debugVisible = false
 	self.debugFolder = nil
 	self.debugParts = nil
@@ -1183,6 +1185,8 @@ function module:DestroyModels()
 	self.autoAimCache = nil
 	self.currentAutoAimTarget = nil
 	self.currentAutoAimIsHeadshot = false
+	self.rolledHeadshotTarget = nil
+	self.rolledHeadshot = false
 
 	if self.gunModel then
 		Debris:AddItem(self.gunModel, 0)
@@ -1250,6 +1254,7 @@ function module:getAutoAimTarget(originPosition: Vector3): AutoAimResult?
 	})
 end
 
+
 function module:updateAnchorFromAimPoint(aimPoint: Vector3?, hasShootTarget: boolean, rootPart: BasePart?): (CFrame?, boolean)
 	rootPart = rootPart or getRootPart(self.character)
 	if not rootPart then
@@ -1311,7 +1316,27 @@ function module:updateAnchor(manualAimPoint: Vector3?, manualAimOverride: boolea
 	local autoAimResult = self:getAutoAimTarget(autoAimOrigin)
 	local autoAimPoint = if autoAimResult then autoAimResult.aimPoint else nil
 	local autoAimTarget = if autoAimResult then autoAimResult.enemy else nil
-	self:setCurrentAutoAimTarget(autoAimTarget, if autoAimResult then autoAimResult.isHeadshot else false)
+	local isHeadshot = autoAimResult ~= nil and autoAimResult.isHeadshot == true
+
+	if autoAimTarget and not isHeadshot then
+		if self.rolledHeadshotTarget ~= autoAimTarget then
+			self.rolledHeadshotTarget = autoAimTarget
+			local chance = self.player and self.player:GetAttribute(AUTO_AIM_HEADSHOT_CHANCE_ATTRIBUTE)
+			self.rolledHeadshot = typeof(chance) == "number" and chance > 0 and math.random() < chance
+		end
+		if self.rolledHeadshot then
+			local headPart = EnemyTargeting.getHeadPart(autoAimTarget)
+			if headPart then
+				isHeadshot = true
+				autoAimPoint = headPart.Position
+			end
+		end
+	elseif not autoAimTarget then
+		self.rolledHeadshotTarget = nil
+		self.rolledHeadshot = false
+	end
+
+	self:setCurrentAutoAimTarget(autoAimTarget, isHeadshot)
 
 	local hasManualAimOverride = manualAimOverride == true and manualAimPoint ~= nil
 	local hasShootTarget = autoAimTarget ~= nil or hasManualAimOverride

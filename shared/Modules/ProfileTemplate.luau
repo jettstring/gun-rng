@@ -40,12 +40,7 @@ return {
 		UnlockedNodes = {},
 	},
 	
-	Settings = {
-		BackgroundMusicVolume = 0.5,
-		SFXVolume = 0.5,
-		CustomLuck = nil,
-		CustomWalkSpeed = nil,
-	},
+	Settings = {},
 	
 	Onboarding = {
 		CompletedOnboarding = false,

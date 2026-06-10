@@ -17,6 +17,9 @@ local loadOrder = {
 	{"StatusDisplay", require(Controllers.StatusDisplay) },
 	{"RebirthController", require(Controllers.RebirthController) },
 	{"IndexController", require(Controllers.IndexController) },
+	{"ConfettiEffect", require(Controllers.ConfettiEffect) },
+	{"CloverEffect", require(Controllers.CloverEffect)},
+	{"SettingsController", require(Controllers.SettingsController) },
 }
 
 -- Build named lookup

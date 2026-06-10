@@ -4,6 +4,7 @@ local LocalPlayer = Players.LocalPlayer
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 local spring = require(ReplicatedStorage.Packages.Spring)
 local spr = require(ReplicatedStorage.Packages.Spr)
@@ -26,7 +27,8 @@ local HITMARKER_VISIBLE_DURATION = 0.3
 local HITMARKER_SHRINK_SIZE_MULT = 0.5
 local HITMARKER_SOUND_ID = "rbxassetid://137166459647708"
 local HEADSHOT_HITMARKER_SOUND_ID = "rbxassetid://108290646184559"
-local HITMARKER_AUDIO_EMITTER_NAME = "HitmarkerAudioEmitter"
+local HITMARKER_AUDIO_CONTAINER_NAME = "HitmarkerSounds"
+local HIT_SOUND_GROUP_NAME = "HitSounds"
 local HITMARKER_AUDIO_VOICE_COUNT = 8
 local HITMARKER_AUDIO_MIN_INTERVAL = 0.025
 local HITMARKER_AUDIO_BASE_VOLUME = 0.42
@@ -83,40 +85,16 @@ local function scheduleDelay(duration: number, callback: () -> ())
 	delayedThreads[delayedThread] = true
 end
 
-local currentCamera = workspace.CurrentCamera
-if currentCamera then
-	for _, child in currentCamera:GetChildren() do
-		if child.Name == HITMARKER_AUDIO_EMITTER_NAME then
-			child:Destroy()
-		end
-	end
-end
+-- Hitmarker audio is non-positional UI feedback. The voice Sounds live in a Folder under this script
+-- (not a BasePart), so they play in 2D — centered, no attenuation — matching the old camera-mounted
+-- AudioEmitter. Each is routed through the HitSounds SoundGroup for central volume/effects control.
+-- Parenting to `script` also means they are destroyed automatically when the character respawns, so
+-- there is no persistent instance to scan for and clean up.
+local hitSoundGroup = SoundService:FindFirstChild(HIT_SOUND_GROUP_NAME) :: SoundGroup?
 
-local hitmarkerAudioEmitter = Instance.new("AudioEmitter")
-hitmarkerAudioEmitter.Name = HITMARKER_AUDIO_EMITTER_NAME
-hitmarkerAudioEmitter.Parent = currentCamera
-
-local hitmarkerAudioLimiter = Instance.new("AudioLimiter")
-hitmarkerAudioLimiter.Name = "HitmarkerAudioLimiter"
-hitmarkerAudioLimiter.Parent = hitmarkerAudioEmitter
-
-local hitmarkerAudioLimiterWire = Instance.new("Wire")
-hitmarkerAudioLimiterWire.Name = "HitmarkerAudioLimiterWire"
-hitmarkerAudioLimiterWire.SourceInstance = hitmarkerAudioLimiter
-hitmarkerAudioLimiterWire.TargetInstance = hitmarkerAudioEmitter
-hitmarkerAudioLimiterWire.Parent = hitmarkerAudioLimiter
-
-trackConnection(workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
-	local camera = workspace.CurrentCamera
-	if camera then
-		for _, child in camera:GetChildren() do
-			if child.Name == HITMARKER_AUDIO_EMITTER_NAME and child ~= hitmarkerAudioEmitter then
-				child:Destroy()
-			end
-		end
-		hitmarkerAudioEmitter.Parent = camera
-	end
-end))
+local hitmarkerAudioContainer = Instance.new("Folder")
+hitmarkerAudioContainer.Name = HITMARKER_AUDIO_CONTAINER_NAME
+hitmarkerAudioContainer.Parent = script
 
 local hitmarkerAudioVoices = table.create(HITMARKER_AUDIO_VOICE_COUNT)
 local nextHitmarkerAudioVoiceIndex = 1
@@ -126,37 +104,33 @@ local pendingHitmarkerAudioHeadshot = false
 local hitmarkerAudioFlushScheduled = false
 
 for index = 1, HITMARKER_AUDIO_VOICE_COUNT do
-	local audioPlayer = Instance.new("AudioPlayer")
-	audioPlayer.Name = `HitmarkerAudioPlayer_{index}`
-	audioPlayer.Parent = hitmarkerAudioEmitter
-	audioPlayer.AutoLoad = true
+	local sound = Instance.new("Sound")
+	sound.Name = `HitmarkerSound_{index}`
+	-- Pre-set the common asset so it preloads before the first hit; the headshot asset swaps in on use.
+	sound.SoundId = HITMARKER_SOUND_ID
+	sound.SoundGroup = hitSoundGroup
+	sound.Parent = hitmarkerAudioContainer
 
-	local wire = Instance.new("Wire")
-	wire.Name = `HitmarkerAudioWire_{index}`
-	wire.SourceInstance = audioPlayer
-	wire.TargetInstance = hitmarkerAudioLimiter
-	wire.Parent = audioPlayer
-
-	hitmarkerAudioVoices[index] = audioPlayer
+	hitmarkerAudioVoices[index] = sound
 end
 
 local function playHitmarkerAudioBatch(headshot: boolean, hitCount: number)
-	local audioPlayer: AudioPlayer = hitmarkerAudioVoices[nextHitmarkerAudioVoiceIndex]
+	local sound: Sound = hitmarkerAudioVoices[nextHitmarkerAudioVoiceIndex]
 	nextHitmarkerAudioVoiceIndex = (nextHitmarkerAudioVoiceIndex % HITMARKER_AUDIO_VOICE_COUNT) + 1
 
 	local batchSteps = math.min(math.max(hitCount - 1, 0), HITMARKER_AUDIO_MAX_BATCH_VOLUME_STEPS)
-	audioPlayer:Stop()
-	audioPlayer.AssetId = if headshot then HEADSHOT_HITMARKER_SOUND_ID else HITMARKER_SOUND_ID
-	audioPlayer.Volume = math.min(
+	sound:Stop()
+	sound.SoundId = if headshot then HEADSHOT_HITMARKER_SOUND_ID else HITMARKER_SOUND_ID
+	sound.Volume = math.min(
 		HITMARKER_AUDIO_MAX_VOLUME,
 		HITMARKER_AUDIO_BASE_VOLUME
 			+ (if headshot then HITMARKER_AUDIO_HEADSHOT_VOLUME_BONUS else 0)
 			+ (batchSteps * HITMARKER_AUDIO_BATCH_VOLUME_STEP)
 	)
-	audioPlayer.PlaybackSpeed = (if headshot then 1.03 else 1)
+	sound.PlaybackSpeed = (if headshot then 1.03 else 1)
 		+ ((math.random() * 2 - 1) * HITMARKER_AUDIO_PITCH_VARIANCE)
-	audioPlayer.TimePosition = 0
-	audioPlayer:Play()
+	sound.TimePosition = 0
+	sound:Play()
 	lastHitmarkerAudioAt = os.clock()
 end
 
@@ -934,5 +908,5 @@ trackConnection(script.Destroying:Connect(function()
 	table.clear(enemyModelCacheById)
 	table.clear(hitmarkerAudioVoices)
 
-	hitmarkerAudioEmitter:Destroy()
+	hitmarkerAudioContainer:Destroy()
 end))

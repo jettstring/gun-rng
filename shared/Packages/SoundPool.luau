@@ -8,6 +8,9 @@ export type SoundPool = {
 	sounds: { Sound },
 	template: Sound?,
 	parent: Instance?,
+	-- Optional SoundGroup applied to every pooled voice. Routing only — the voice stays parented to
+	-- its host part, so spatial/directional audio is unaffected. nil leaves voices ungrouped.
+	soundGroup: SoundGroup?,
 	maxSize: number,
 	destroyed: boolean,
 	Play: (self: SoundPool, location: Vector3?, volumeScale: number?) -> Sound?,
@@ -39,6 +42,9 @@ local function createEntry(soundPool: SoundPool, location: Vector3?): SoundPoolE
 
 	local sound = template:Clone()
 	sound.Parent = host
+	if soundPool.soundGroup then
+		sound.SoundGroup = soundPool.soundGroup
+	end
 
 	local entry = {
 		host = host,
@@ -50,12 +56,19 @@ local function createEntry(soundPool: SoundPool, location: Vector3?): SoundPoolE
 	return entry
 end
 
-function SoundPool.new(template: Sound, parent: Instance, maxSize: number, initialSize: number?): SoundPool
+function SoundPool.new(
+	template: Sound,
+	parent: Instance,
+	maxSize: number,
+	initialSize: number?,
+	soundGroup: SoundGroup?
+): SoundPool
 	local self: SoundPool = {
 		entries = {},
 		sounds = {},
 		template = template,
 		parent = parent,
+		soundGroup = soundGroup,
 		--maxSize = 200,
 
 		maxSize = math.max(1, maxSize),
@@ -117,6 +130,7 @@ function SoundPool:Destroy()
 	self.destroyed = true
 	self.template = nil
 	self.parent = nil
+	self.soundGroup = nil
 end
 
 return SoundPool

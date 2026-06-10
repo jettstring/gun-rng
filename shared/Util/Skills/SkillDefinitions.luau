@@ -584,7 +584,7 @@ local tree: SkillTree.NestedSkillDefinitions = {
 								subTreeExit = true,
 								label = "+1 Enemies",
 								description = "1 more enemy", price = 9000,
-								imageId = "rbxassetid://108440332916446",
+								imageId = "rbxassetid://92417870658637",
 								stats = { enemyCap = 1 },
 								unlocks = {
 									["Big Enemies"] = {
@@ -630,7 +630,7 @@ local tree: SkillTree.NestedSkillDefinitions = {
 										direction = "TopRight",
 										label = "+2 Enemies",
 										description = "2 more enemies", price = 40000,
-										imageId = "rbxassetid://137879301891582",
+										imageId = "rbxassetid://92417870658637",
 										stats = { enemyCap = 1 },
 										unlocks = {
 											["Tags I"] = {
@@ -677,35 +677,35 @@ local tree: SkillTree.NestedSkillDefinitions = {
 												direction = "TopRight",
 												label = "+3 Enemies",
 												description = "3 more enemies", price = 180000,
-												imageId = "rbxassetid://137879301891582",
+												imageId = "rbxassetid://92417870658637",
 												stats = { enemyCap = 1 },
 												unlocks = {
 													["5 Enemies"] = {
 														direction = "TopRight",
 														label = "+4 Enemies",
 														description = "4 more enemies", price = 750000,
-														imageId = "rbxassetid://137879301891582",
+														imageId = "rbxassetid://92417870658637",
 														stats = { enemyCap = 1 },
 														unlocks = {
 															["6 Enemies"] = {
 																direction = "TopRight",
 																label = "+5 Enemies",
 																description = "5 more enemies", price = 3000000,
-																imageId = "rbxassetid://137879301891582",
+																imageId = "rbxassetid://92417870658637",
 																stats = { enemyCap = 1 },
 																unlocks = {
 																	["7 Enemies"] = {
 																		direction = "TopRight",
 																		label = "+6 Enemies",
 																		description = "6 more enemies", price = 12000000,
-																		imageId = "rbxassetid://137879301891582",
+																		imageId = "rbxassetid://92417870658637",
 																		stats = { enemyCap = 1 },
 																		unlocks = {
 																			["8 Enemies"] = {
 																				direction = "TopRight",
 																				label = "+7 Enemies",
 																				description = "7 more enemies", price = 50000000,
-																				imageId = "rbxassetid://137879301891582",
+																				imageId = "rbxassetid://92417870658637",
 																				stats = { enemyCap = 1 },
 																			},
 																		},
@@ -742,14 +742,14 @@ local tree: SkillTree.NestedSkillDefinitions = {
 							},
 						},
 					},
-					["2 Gun Slots"] = {
+					["+2 Gun Slots"] = {
 						direction = "TopLeft",
-						description = "Increase equipped gun slots to 2", price = 6000,
+						description = "+2 more gun slots!", price = 6000,
 						stats = { gunSlots = 1 },
 						unlocks = {
-							["3 Gun Slots"] = {
+							["+3 Gun Slots"] = {
 								direction = "BottomLeft",
-								description = "Increase equipped gun slots to 3", price = 25000,
+								description = "+3 more gun slots!", price = 25000,
 								stats = { gunSlots = 1 },
 								unlocks = {
 									["Big Guns"] = {
@@ -769,20 +769,27 @@ local tree: SkillTree.NestedSkillDefinitions = {
 													},
 												},
 											},
-											["4 Gun Slots"] = {
+											["+4 Gun Slots"] = {
 												direction = "TopLeft",
-												description = "Increase equipped gun slots to 4", price = 120000,
+												description = "+4 more gun slots!", price = 120000,
 												stats = { gunSlots = 1 },
+												unlocks = {},
+											},
+											["Headshot Chance 1"] = {
+												direction = "BottomLeft",
+												description = "Chance to automatically headshot", price = 400000,
+												stats = { AutoAimHeadshot = 0.05 },
 												unlocks = {
-													["5 Gun Slots"] = {
+													["Headshot Chance 2"] = {
 														direction = "BottomLeft",
-														description = "Increase equipped gun slots to 5", price = 600000,
-														stats = { gunSlots = 1 },
+														description = "Higher chance to automatically headshot", price = 400000,
+														stats = { AutoAimHeadshot = 0.05 },
 														unlocks = {
-															["6 Gun Slots"] = {
+															["Headshot Chance 3"] = {
 																direction = "BottomLeft",
-																description = "Increase equipped gun slots to 6", price = 3000000,
-																stats = { gunSlots = 1 },
+																description = "Even higher chance to automatically headshot", price = 400000,
+																stats = { AutoAimHeadshot = 0.1 },
+																unlocks = {},
 															},
 														},
 													},

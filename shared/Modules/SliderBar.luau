@@ -86,11 +86,11 @@ local function render(self)
 	end
 end
 
-local function setIndex(self, index: number)
+local function setIndex(self, index: number, silent: boolean?)
 	local old = self.index
 	self.index = index
 	render(self)
-	if old ~= index then
+	if not silent and old ~= index then
 		self.changedSignal:Fire(self.values[index], self.values[old])
 	end
 end
@@ -168,10 +168,10 @@ function SlideBar:GetValue<T>(): T
 	return self.values[self.index]
 end
 
-function SlideBar:SetValue<T>(value: T)
+function SlideBar:SetValue<T>(value: T, silent: boolean?)
 	local index = table.find(self.values, value)
-	if index then
-		setIndex(self, index)
+	if index and index ~= self.index then
+		setIndex(self, index, silent)
 	end
 end
 

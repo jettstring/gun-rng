@@ -1,13 +1,22 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local SoundService = game:GetService("SoundService")
 
 local SoundPool = require(ReplicatedStorage.Packages.SoundPool)
 
 local ProjectileAudio = {}
 
--- Gated by the future "other players' gun sounds" client setting. When false, shots from other
--- players (isLocalShooter == false) are silenced; the local player's own shots are never gated.
 ProjectileAudio.OtherPlayerGunAudioEnabled = true
+
+local GUN_SOUND_GROUP_NAME = "GunSounds"
+local gunSoundGroup: SoundGroup? = nil
+local function getGunSoundGroup(): SoundGroup?
+	if gunSoundGroup and gunSoundGroup.Parent then
+		return gunSoundGroup
+	end
+	gunSoundGroup = SoundService:FindFirstChild(GUN_SOUND_GROUP_NAME) :: SoundGroup?
+	return gunSoundGroup
+end
 
 local PROJECTILE_SOUND_POOL_FOLDER_NAME = "ProjectileSoundPools"
 local SHOOT_SOUND_POOL_MIN_SIZE = 4
@@ -61,7 +70,13 @@ local function createSoundTemplate(
 	return template
 end
 
-local function getProjectileSoundPool(poolKey: string, template: Sound, maxSize: number, initialSize: number?): any
+local function getProjectileSoundPool(
+	poolKey: string,
+	template: Sound,
+	maxSize: number,
+	initialSize: number?,
+	soundGroup: SoundGroup?
+): any
 	local soundPool = projectileSoundPools[poolKey]
 	if not soundPool then
 		local projectileParent = Workspace:WaitForChild("RAY_IGNORE")
@@ -72,7 +87,7 @@ local function getProjectileSoundPool(poolKey: string, template: Sound, maxSize:
 			soundFolder.Parent = projectileParent
 		end
 
-		soundPool = SoundPool.new(template, soundFolder, maxSize, initialSize)
+		soundPool = SoundPool.new(template, soundFolder, maxSize, initialSize, soundGroup)
 		projectileSoundPools[poolKey] = soundPool
 	elseif soundPool.maxSize < maxSize then
 		soundPool.maxSize = maxSize
@@ -112,7 +127,8 @@ local function playPooledShot(sourceSound: Sound, position: Vector3?, shotInterv
 			maxPoolSize
 		)
 		else math.clamp(SHOOT_SOUND_POOL_FALLBACK_SIZE * sourceCount, SHOOT_SOUND_POOL_MIN_SIZE, maxPoolSize)
-	soundPool = getProjectileSoundPool(poolKey, template, poolSize, math.min(SHOOT_SOUND_POOL_MIN_SIZE, poolSize))
+	soundPool =
+		getProjectileSoundPool(poolKey, template, poolSize, math.min(SHOOT_SOUND_POOL_MIN_SIZE, poolSize), getGunSoundGroup())
 	soundPool:Play(position)
 end
 
@@ -147,7 +163,13 @@ function ProjectileAudio.playForceFieldHit(location: Vector3?)
 	local soundPool = projectileSoundPools[poolKey]
 	if not soundPool then
 		local template = createSoundTemplate("ForceFieldHit", FORCEFIELD_HIT_SOUND_ID, 3, 70, nil)
-		soundPool = getProjectileSoundPool(poolKey, template, FORCEFIELD_HIT_SOUND_POOL_SIZE, FORCEFIELD_HIT_SOUND_POOL_SIZE)
+		soundPool = getProjectileSoundPool(
+			poolKey,
+			template,
+			FORCEFIELD_HIT_SOUND_POOL_SIZE,
+			FORCEFIELD_HIT_SOUND_POOL_SIZE,
+			getGunSoundGroup()
+		)
 	end
 
 	soundPool:Play(location)
@@ -158,7 +180,13 @@ function ProjectileAudio.playExplosion(location: Vector3?)
 	local soundPool = projectileSoundPools[poolKey]
 	if not soundPool then
 		local template = createSoundTemplate("Explode", EXPLOSION_SOUND_ID, 1, nil, EXPLOSION_SOUND_ROLL_OFF_MAX_DISTANCE)
-		soundPool = getProjectileSoundPool(poolKey, template, EXPLOSION_SOUND_POOL_SIZE, EXPLOSION_SOUND_POOL_INITIAL_SIZE)
+		soundPool = getProjectileSoundPool(
+			poolKey,
+			template,
+			EXPLOSION_SOUND_POOL_SIZE,
+			EXPLOSION_SOUND_POOL_INITIAL_SIZE,
+			getGunSoundGroup()
+		)
 	end
 
 	soundPool:Play(location)

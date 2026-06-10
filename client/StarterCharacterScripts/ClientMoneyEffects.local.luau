@@ -1,10 +1,13 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local GuiService = game:GetService("GuiService")
 
 local FlyingItem = require(ReplicatedStorage.Packages.FlyingItem)
 local DroppedCurrencyItem = require(ReplicatedStorage.Packages.DroppedCurrencyItem)
 local SoundPool = require(ReplicatedStorage.Packages.SoundPool)
+local Abbreviate = require(ReplicatedStorage.Packages.Abbreviate)
 
 local CurrencyAssets = ReplicatedStorage:WaitForChild("GameAssets"):WaitForChild("CurrencyAssets")
 local currencyRemotes = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Currency")
@@ -102,6 +105,257 @@ local function addFlyingMoney(
 		table.insert(flyingItems, flyingItem)
 	end
 end
+
+--------------------------------------------------
+-- CURRENCY ADDED POPUP --
+-- Accumulating "+amount" readout (StarterGui.Popups.CurrencyAdded) that pops in
+-- when a currency burst starts, counts up to the authoritative total, then fades
+-- after a short idle gap. Money is credited from the authoritative server
+-- `increment` (and dropped-Money amount); dogtags from dropped-Dogtag amount.
+-- Per-coin `amount` is a sound-tier hint, not a real value, so it is never summed.
+--------------------------------------------------
+local HOLD_DURATION = 1.25 -- seconds without new currency before the popup fades out
+local FADE_DURATION = 0.3
+local COUNT_UP_SPEED = 6 -- higher = the displayed number catches up to the total faster
+local POP_SCALE = 1.18
+local POP_TWEEN_INFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0, true)
+
+type CurrencyRow = {
+	frame: GuiObject,
+	label: TextLabel,
+	scale: UIScale,
+	stroke: UIStroke?,
+	strokeTransparency: number,
+	icon: ImageLabel?,
+	prefix: string,
+	target: number,
+	shown: number,
+}
+
+local function buildRow(frame: Instance?, prefix: string): CurrencyRow?
+	if not frame or not frame:IsA("GuiObject") then
+		return nil
+	end
+
+	local label = frame:FindFirstChild("Amount")
+	if not label or not label:IsA("TextLabel") then
+		return nil
+	end
+
+	local scale = label:FindFirstChildOfClass("UIScale")
+	if not scale then
+		scale = Instance.new("UIScale")
+		scale.Parent = label
+	end
+
+	local stroke = label:FindFirstChildOfClass("UIStroke")
+	local icon = frame:FindFirstChild("Icon")
+
+	return {
+		frame = frame,
+		label = label,
+		scale = scale,
+		stroke = stroke,
+		strokeTransparency = if stroke then stroke.Transparency else 0,
+		icon = if icon and icon:IsA("ImageLabel") then icon else nil,
+		prefix = prefix,
+		target = 0,
+		shown = 0,
+	}
+end
+
+local popupFrame: GuiObject? = nil
+local moneyRow: CurrencyRow? = nil
+local dogtagRow: CurrencyRow? = nil
+local popupState = "hidden" -- "hidden" | "active" | "fading"
+local lastActivityClock = 0
+local fadeAlpha = 0
+
+do
+	local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+	local popups = playerGui:WaitForChild("Currency", 5)
+	local currencyAdded = if popups then popups:WaitForChild("CurrencyAdded", 5) else nil
+	if currencyAdded and currencyAdded:IsA("GuiObject") then
+		popupFrame = currencyAdded
+		moneyRow = buildRow(currencyAdded:FindFirstChild("MoneyDisplay"), "+$")
+		dogtagRow = buildRow(currencyAdded:FindFirstChild("DogtagDisplay"), "+")
+		-- Money sits above dogtags; both rows start hidden (the GUI persists across respawns).
+		if moneyRow then
+			moneyRow.frame.LayoutOrder = 1
+			moneyRow.frame.Visible = false
+		end
+		if dogtagRow then
+			dogtagRow.frame.LayoutOrder = 2
+			dogtagRow.frame.Visible = false
+		end
+		-- The frame tracks the character on screen (see updatePopupPosition), so it
+		-- anchors at its own centre rather than the static bottom-left design anchor.
+		currencyAdded.AnchorPoint = Vector2.new(0, 0)
+		currencyAdded.Visible = false
+	else
+		warn("[ClientMoneyEffects] CurrencyAdded popup not found; the +currency counter is disabled.")
+	end
+end
+
+-- Projects the character's HumanoidRootPart (the point money flies to) into screen
+-- space and parks the popup there. Popups (the ScreenGui) keeps the topbar inset, so
+-- the viewport point is shifted down by GetGuiInset() to land in that GUI's space.
+local function updatePopupPosition(targetPart: BasePart?)
+	if not popupFrame or not targetPart then
+		return
+	end
+
+	local camera = workspace.CurrentCamera
+	if not camera then
+		return
+	end
+
+	local viewportPoint = camera:WorldToViewportPoint(targetPart.Position)
+	if viewportPoint.Z <= 0 then
+		return -- behind the camera; keep the last on-screen position
+	end
+
+	local inset = GuiService:GetGuiInset()
+	popupFrame.Position = UDim2.fromOffset(viewportPoint.X - inset.X, viewportPoint.Y - inset.Y)
+end
+
+local function restoreRowVisual(row: CurrencyRow)
+	row.label.TextTransparency = 0
+	if row.stroke then
+		row.stroke.Transparency = row.strokeTransparency
+	end
+	if row.icon then
+		row.icon.ImageTransparency = 0
+	end
+end
+
+local function updateRowText(row: CurrencyRow)
+	row.label.Text = row.prefix .. Abbreviate.AbbreviateNumber(math.floor(row.shown), 2)
+end
+
+local function popRow(row: CurrencyRow)
+	row.scale.Scale = 1
+	TweenService:Create(row.scale, POP_TWEEN_INFO, { Scale = POP_SCALE }):Play()
+end
+
+local function creditCurrency(row: CurrencyRow?, amount: number)
+	if not row or not popupFrame or amount <= 0 then
+		return
+	end
+
+	-- A credit during the fade-out cancels it and keeps accumulating.
+	if popupState == "fading" then
+		if moneyRow then
+			restoreRowVisual(moneyRow)
+		end
+		if dogtagRow then
+			restoreRowVisual(dogtagRow)
+		end
+	end
+
+	popupState = "active"
+	lastActivityClock = os.clock()
+	popupFrame.Visible = true
+	updatePopupPosition(getCurrentPrimaryPart()) -- place it correctly on the first visible frame
+
+	if not row.frame.Visible then
+		row.frame.Visible = true
+		row.shown = 0
+		restoreRowVisual(row)
+		updateRowText(row)
+	end
+
+	row.target += amount
+	popRow(row)
+end
+
+local function creditMoney(amount: number)
+	creditCurrency(moneyRow, amount)
+end
+
+local function creditDogtags(amount: number)
+	creditCurrency(dogtagRow, amount)
+end
+
+local function tickRow(row: CurrencyRow, dt: number)
+	if not row.frame.Visible or row.shown == row.target then
+		return
+	end
+
+	local diff = row.target - row.shown
+	if math.abs(diff) < 1 then
+		row.shown = row.target
+	else
+		row.shown += diff * math.clamp(dt * COUNT_UP_SPEED, 0, 1)
+	end
+	updateRowText(row)
+end
+
+local function fadeRow(row: CurrencyRow, alpha: number)
+	if not row.frame.Visible then
+		return
+	end
+	row.label.TextTransparency = alpha
+	if row.stroke then
+		row.stroke.Transparency = row.strokeTransparency + (1 - row.strokeTransparency) * alpha
+	end
+	if row.icon then
+		row.icon.ImageTransparency = alpha
+	end
+end
+
+local function resetRow(row: CurrencyRow)
+	row.frame.Visible = false
+	row.target = 0
+	row.shown = 0
+	restoreRowVisual(row)
+end
+
+local function resetPopup()
+	if popupFrame then
+		popupFrame.Visible = false
+	end
+	if moneyRow then
+		resetRow(moneyRow)
+	end
+	if dogtagRow then
+		resetRow(dogtagRow)
+	end
+	popupState = "hidden"
+end
+
+local function updateCurrencyPopup(dt: number, targetPart: BasePart?)
+	if popupState == "hidden" then
+		return
+	end
+
+	updatePopupPosition(targetPart)
+
+	if popupState == "active" then
+		if moneyRow then
+			tickRow(moneyRow, dt)
+		end
+		if dogtagRow then
+			tickRow(dogtagRow, dt)
+		end
+		if os.clock() - lastActivityClock > HOLD_DURATION then
+			popupState = "fading"
+			fadeAlpha = 0
+		end
+	elseif popupState == "fading" then
+		fadeAlpha = math.min(1, fadeAlpha + dt / FADE_DURATION)
+		if moneyRow then
+			fadeRow(moneyRow, fadeAlpha)
+		end
+		if dogtagRow then
+			fadeRow(dogtagRow, fadeAlpha)
+		end
+		if fadeAlpha >= 1 then
+			resetPopup()
+		end
+	end
+end
+
 table.insert(connections, clientMoneyEffectsRemote.OnClientEvent:Connect(function(_amount: number, increment: number?, sku: string?)
 	if sku == "auto-sell-star-individual" then
 		if increment == nil then
@@ -109,6 +363,7 @@ table.insert(connections, clientMoneyEffectsRemote.OnClientEvent:Connect(functio
 		end
 
 		addFlyingMoney("AutoSellMoney", sku, 1, increment, Color3.fromRGB(255, 240, 0), 0, 0, true)
+		creditMoney(increment)
 		return
 	end
 
@@ -116,6 +371,8 @@ table.insert(connections, clientMoneyEffectsRemote.OnClientEvent:Connect(functio
 		moneyCollectSoundPool:Play()
 
 		if increment > 0 then
+			creditMoney(increment)
+
 			local purples: number = increment // 100
 			purples = math.min(10, purples)
 			local valuePerPurple = 0
@@ -204,8 +461,10 @@ table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime: n
 			if item.didCollect then
 				if item.dropName == "Money" then
 					playMoneyPickupSound(item.amount)
+					creditMoney(item.amount)
 				elseif item.dropName == "Dogtags" then
 					dogtagitemPool:Play()
+					creditDogtags(item.amount)
 				end
 
 				if item.requiresServerCollect then
@@ -219,9 +478,15 @@ table.insert(connections, RunService.RenderStepped:Connect(function(deltaTime: n
 			item:Update(deltaTime, currentPrimaryPart, currentMagnetRange)
 		end
 	end
+
+	updateCurrencyPopup(deltaTime, currentPrimaryPart)
 end))
 
 script.Destroying:Connect(function()
+	if popupFrame then
+		popupFrame.Visible = false
+	end
+
 	for _, connection in connections do
 		connection:Disconnect()
 	end

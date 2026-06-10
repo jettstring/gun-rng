@@ -19,7 +19,7 @@ local player = Players.LocalPlayer
 local playerGui = player.PlayerGui
 local camera = workspace.CurrentCamera
 
-local UIsfx = SoundService.SFX:WaitForChild("UI")
+local UIsfx = SoundService:WaitForChild("UI")
 
 -- GUIs 
 local Displays = playerGui:WaitForChild("Displays")

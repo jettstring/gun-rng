@@ -12,7 +12,7 @@ local SkillDefinitions = require(ReplicatedStorage.Util.Skills.SkillDefinitions)
 local Gigantix = require(ReplicatedStorage.Packages.Gigantix)
 local Spr = require(ReplicatedStorage.Packages.Spr)
 local SoundPool = require(ReplicatedStorage.Packages.SoundPool)
-local UIsfx = SoundService.SFX:WaitForChild("UI")
+local UIsfx = SoundService:WaitForChild("UI")
 
 type Skill = SkillTree.Skill
 

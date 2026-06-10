@@ -48,24 +48,28 @@ local OWNER_TAG_PREFIX = "Enemy-"
 local DEATH_SOUND_CLEANUP_PADDING = 2
 local DEATH_SOUND_FALLBACK_LIFETIME = 10
 local AGENT_ROOT_WAIT_TIMEOUT = 5
--- Higher = the visual rig snaps to the agent faster. The agent moves at the
--- server tick rate; lerping toward its (replicated) root smooths that to 60fps.
 local FOLLOW_SMOOTHING = 18
-
--- On death the rig is detached and ragdolled (every joint dropped). It collides as
--- an Enemy so the corpse rests on the floor without shoving the player, then Debris
--- removes it after this many seconds.
 local RAGDOLL_LIFETIME = 3
 local RAGDOLL_COLLISION_GROUP = "Enemy"
 
 local HIGHLIGHT_FILL_COLOR = Color3.fromRGB(255, 255, 255)
 local HIGHLIGHT_OUTLINE_COLOR = Color3.fromRGB(255, 255, 255)
+local ENEMY_WALK_ANIMATIONS = true
+local ENEMY_WALK_ANIMATION_ID = "rbxassetid://16738340646" -- default R15 walk
+local WALK_STOP_SPEED = 0.5
+local WALK_SPEED_SMOOTHING = 8 -- EMA factor that de-jitters the per-frame speed estimate
+local WALK_FADE_TIME = 0.15 -- stop/resume fade when crossing WALK_STOP_SPEED
 
 type TrackedAgent = {
 	rig: Model,
 	rigRoot: BasePart,
 	agentRoot: BasePart,
 	connections: { RBXScriptConnection },
+	walkTrack: AnimationTrack?,
+	maxWalkSpeed: number,
+	smoothedSpeed: number,
+	smoothedApproach: number,
+	walkPlaying: boolean,
 }
 
 local tracked: { [Instance]: TrackedAgent } = {}
@@ -222,7 +226,28 @@ local function killAgent(agent: Instance)
 	Debris:AddItem(entry.rig, RAGDOLL_LIFETIME)
 end
 
--- Clone + prepare the owner-only visual rig for one agent.
+-- Loop a walk animation on the rig's Humanoid. the rig is posed by its joints while its root is CFrame-driven so the Humanoid's state machine (disabled in watchAgent) never triggers movement animations
+local function playWalkAnimation(rigHumanoid: Humanoid): AnimationTrack?
+	if not ENEMY_WALK_ANIMATIONS then
+		return nil
+	end
+
+	local animator = rigHumanoid:FindFirstChildOfClass("Animator")
+	if not animator then
+		animator = Instance.new("Animator")
+		animator.Parent = rigHumanoid
+	end
+
+	local animation = Instance.new("Animation")
+	animation.AnimationId = ENEMY_WALK_ANIMATION_ID
+
+	local track = animator:LoadAnimation(animation)
+	track.Looped = true
+	track.Priority = Enum.AnimationPriority.Movement
+	track:Play()
+	return track
+end
+
 local function watchAgent(agent: Instance)
 	if not agent:IsA("Model") or tracked[agent] then
 		return
@@ -294,12 +319,23 @@ local function watchAgent(agent: Instance)
 	rig:PivotTo(agentRoot.CFrame)
 	rig.Parent = rigsFolder
 
+	-- Rig is live in Workspace now; start its walk loop. nil when the flag is off or the
+	-- rig has no Humanoid; updateFollow couples its playback speed to actual movement.
+	local walkTrack: AnimationTrack? = if rigHumanoid then playWalkAnimation(rigHumanoid) else nil
+
 	local connections: { RBXScriptConnection } = {}
 	local entry: TrackedAgent = {
 		rig = rig,
 		rigRoot = rigRoot,
 		agentRoot = agentRoot,
 		connections = connections,
+		walkTrack = walkTrack,
+		maxWalkSpeed = definition.walkSpeed,
+		-- Seed at max, toward the target, so a freshly spawned (already-walking) enemy
+		-- reads as moving forward at once instead of stop-starting or playing reversed.
+		smoothedSpeed = definition.walkSpeed,
+		smoothedApproach = definition.walkSpeed,
+		walkPlaying = walkTrack ~= nil,
 	}
 	tracked[agent] = entry
 
@@ -341,12 +377,68 @@ local function watchAgent(agent: Instance)
 	end))
 end
 
+-- The local player is the target enemies path toward (their owner-only rigs face it).
+-- nil while the player has no spawned character.
+local function getTargetPosition(): Vector3?
+	local character = player.Character
+	if not character then
+		return nil
+	end
+	local root = character:FindFirstChild("HumanoidRootPart")
+	return if root and root:IsA("BasePart") then root.Position else nil
+end
+
+local function updateWalkSpeed(entry: TrackedAgent, previousPosition: Vector3, deltaTime: number, targetPosition: Vector3?)
+	local track = entry.walkTrack
+	if not track or deltaTime <= 0 then
+		return
+	end
+
+	local movement = entry.rigRoot.Position - previousPosition
+	local smoothing = math.min(1, deltaTime * WALK_SPEED_SMOOTHING)
+
+	local instantSpeed = movement.Magnitude / deltaTime
+	entry.smoothedSpeed += (instantSpeed - entry.smoothedSpeed) * smoothing
+	local approachInstant = 0
+	if targetPosition then
+		local toTarget = targetPosition - entry.rigRoot.Position
+		local distance = toTarget.Magnitude
+		if distance > 1e-3 then
+			approachInstant = movement:Dot(toTarget) / distance / deltaTime
+		end
+	end
+	entry.smoothedApproach += (approachInstant - entry.smoothedApproach) * smoothing
+
+	if entry.smoothedSpeed < WALK_STOP_SPEED then
+		if entry.walkPlaying then
+			track:Stop(WALK_FADE_TIME)
+			entry.walkPlaying = false
+		end
+		return
+	end
+
+	if not entry.walkPlaying then
+		track:Play(WALK_FADE_TIME)
+		entry.walkPlaying = true
+	end
+
+	local direction = if entry.smoothedApproach < -WALK_STOP_SPEED then -1 else 1
+	local playbackSpeed = if entry.maxWalkSpeed > 0 then entry.smoothedSpeed / entry.maxWalkSpeed else 1
+	track:AdjustSpeed(direction * playbackSpeed)
+end
+
 -- Smoothly follow each agent's (replicated, interpolated) root every frame.
 local function updateFollow(deltaTime: number)
 	local alpha = math.min(1, deltaTime * FOLLOW_SMOOTHING)
+	local targetPosition = getTargetPosition()
 	for _, entry in tracked do
 		if entry.agentRoot.Parent then
+			local previousPosition = entry.rigRoot.Position
 			entry.rigRoot.CFrame = entry.rigRoot.CFrame:Lerp(entry.agentRoot.CFrame, alpha)
+
+			if entry.walkTrack then
+				updateWalkSpeed(entry, previousPosition, deltaTime, targetPosition)
+			end
 		end
 	end
 end

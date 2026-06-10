@@ -81,26 +81,24 @@ local module: { [string]: ZoneDefinition } = {
 		enemyHealthMultiplier = 8,
 		enemyTagRewardMultiplier = 1,
 	},
-	--["Zone Nine"] = {
-	--	label = "Zone Nine",
-	--	order = 9,
-	--price = 200_000_000,
-
-	--	price = 800_000_000,
-	--	description = "",
-	--	enemyCashRewardMultiplier = 11,
-	--	enemyHealthMultiplier = 7,
-	--	enemyTagRewardMultiplier = 1,
-	--},
-	--["Zone Ten"] = {
-	--	label = "Zone Ten",
-	--	order = 10,
-	--	price = 3_000_000_000,
-	--	description = "",
-	--	enemyCashRewardMultiplier = 14,
-	--	enemyHealthMultiplier = 8.5,
-	--	enemyTagRewardMultiplier = 1,
-	--},
+	["Colosseum"] = {
+		label = "Colosseum",
+		order = 9,
+	price = 200_000_000,
+		description = "",
+		enemyCashRewardMultiplier = 11,
+		enemyHealthMultiplier = 7,
+		enemyTagRewardMultiplier = 1,
+	},
+	["Heaven"] = {
+		label = "Heaven",
+		order = 10,
+		price = 1_000_000_000,
+		description = "",
+		enemyCashRewardMultiplier = 14,
+		enemyHealthMultiplier = 8.5,
+		enemyTagRewardMultiplier = 1,
+	},
 }
 
 return module

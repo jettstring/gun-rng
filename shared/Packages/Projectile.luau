@@ -39,6 +39,7 @@ type ProjectileOptions = {
 	ignoreCharacter: Model?,
 	ammoType: string?,
 	isExplosive: boolean?,
+	blastRadius: number?,
 	ricochet: number?,
 	penetrations: number?,
 	visualId: string?,
@@ -52,6 +53,7 @@ local DEFAULT_HEADSHOT_MULT = 1
 local ENEMY_TAG_PREFIX = "Enemy-"
 local SURFACE_RAYCAST_OFFSET = 0.25
 local EXPLOSION_LIFETIME = 1
+local DEFAULT_BLAST_RADIUS = 12
 local PHYSICS_TARGET_BULLET_MASS = 0.01
 local PHYSICS_TARGET_BULLET_VELOCITY = 1200
 local PHYSICS_TARGET_TRANSFER_EFFICIENCY = 0.7
@@ -228,6 +230,7 @@ function module.new(shootPart: BasePart, options: ProjectileOptions, bulletName:
 	self.smartLockedTarget = nil
 	self.ammoType = projectileOptions.ammoType
 	self.isExplosive = projectileOptions.isExplosive == true
+	self.blastRadius = projectileOptions.blastRadius
 	if self.ammoType == "Explosive" then
 		self.isExplosive = true
 		self.ricochetsRemaining = 0
@@ -908,7 +911,7 @@ function module:hit(rayOrigin: Vector3, raycastResult: RaycastResult)
 		local explosion = Instance.new("Explosion")
 		explosion.Position = raycastResult.Position
 		explosion.DestroyJointRadiusPercent = 0
-		explosion.BlastRadius = 12
+		explosion.BlastRadius = self.blastRadius or DEFAULT_BLAST_RADIUS
 		explosion.BlastPressure = 0
 		explosion.Visible = false
 		self.lastHitSound = "explosion"

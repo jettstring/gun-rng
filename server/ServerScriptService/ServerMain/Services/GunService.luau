@@ -660,6 +660,7 @@ local function handleShoot(
 			ignoreCharacter = character,
 			ammoType = ammoType,
 			isExplosive = weaponDefinition.isExplosive == true,
+			blastRadius = weaponDefinition.blastRadius,
 			ricochet = weaponDefinition.ricochet,
 			penetrations = weaponDefinition.penetrations,
 			visualId = projectileVisualId,

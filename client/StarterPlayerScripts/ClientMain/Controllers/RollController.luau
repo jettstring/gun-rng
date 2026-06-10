@@ -239,9 +239,6 @@ local function displayJackpotSpin(rollData: RollData, jackpotResults: {[number]:
 		return skipSignaled or elapsedFullSpin() >= FULL_SPIN_MAX_TIME
 	end
 
-	
-	
-
 	-- Countdown label + auto-hide skip UI once reveal starts
 	ActiveRollTrove:Add(RunService.RenderStepped:Connect(function()
 		if shouldStartReveal() then
@@ -419,6 +416,8 @@ local function displayJackpotSpin(rollData: RollData, jackpotResults: {[number]:
 						{Scale = 1.25}
 					)
 					scaleTween:Play()
+					
+					RollController.Controllers.ConfettiEffect:Emit(3)
 				end
 			end
 			
@@ -601,6 +600,14 @@ local function displayRollSpin(rollData: RollData, rollResults: {ColumnResults},
 							end
 							imageLabel.ImageTransparency = defaultTransparency + (1 - defaultTransparency) * fade
 						end
+						
+						for _, frame: Frame in rewardFrame:QueryDescendants("Frame") do
+							local defaultTransparency = frame:GetAttribute("DefaultTransparency") or frame.BackgroundTransparency
+							if not frame:GetAttribute("DefaultTransparency") then
+								frame:SetAttribute("DefaultTransparency", defaultTransparency)
+							end
+							frame.BackgroundTransparency = defaultTransparency + (1 - defaultTransparency) * fade
+						end
 
 					end
 
@@ -636,6 +643,11 @@ local function displayRollSpin(rollData: RollData, rollResults: {ColumnResults},
 							revealBeam.Rotation += 100 * deltaTime
 						end))
 						
+						-- create screen clover effect
+						if result.type == "RollLuck" then
+							local multiplier = result.rollLuckMultiplier or 1
+							RollController.Controllers.CloverEffect:Emit(multiplier)
+						end
 					end
 				end)
 				ActiveRollTrove:Add(connection)

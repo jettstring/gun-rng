@@ -14,6 +14,7 @@ local loadOrder = {
 	{"CustomAnalyticsService", require(Services.CustomAnalyticsService) },
 	{"RebirthService", require(Services.RebirthService) },
 	{"IndexService", require(Services.IndexService) },
+	{"SettingsService", require(Services.SettingsService) },
 }
 
 -- Build named lookup

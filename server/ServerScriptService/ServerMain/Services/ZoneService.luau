@@ -56,6 +56,9 @@ local SCREEN_PART_NAME = "Screen"
 local FLOOR_PART_NAME = "Floor"
 local MAX_UNLOCK_DISTANCE_FROM_PART = 60
 local PLAYER_IGNORE_TAG_PREFIX = "Ignore-"
+local IGNORE_TAG = "Ignore"
+local MAP_FOLDER_NAME = "Map"
+local MAP_IGNORE_FOLDER_NAMES = { "Border", "Props" }
 local HIDDEN_ZONE_PART_NAMES = {
 	Detector = true,
 	SpawnZone = true,
@@ -126,6 +129,23 @@ local function removePlayerIgnoreTags(player: Player)
 	end
 end
 
+local function tagMapPartsAsIgnored(zoneModel: Instance)
+	local mapFolder = zoneModel:WaitForChild(MAP_FOLDER_NAME) :: Folder
+
+	for _, folderName in MAP_IGNORE_FOLDER_NAMES do
+		local folder = mapFolder:FindFirstChild(folderName)
+		if not folder then
+			continue
+		end
+
+		for _, descendant in folder:GetDescendants() do
+			if descendant:IsA("BasePart") then
+				CollectionService:AddTag(descendant, IGNORE_TAG)
+			end
+		end
+	end
+end
+
 local function registerZoneModel(zoneModel: Instance)
 	if ZoneService.ZoneContexts[zoneModel.Name] then
 		return
@@ -154,6 +174,8 @@ local function registerZoneModel(zoneModel: Instance)
 			part.CanCollide = false
 		end
 	end
+
+	tagMapPartsAsIgnored(zoneModel)
 
 	local wallFolder = logicParts:FindFirstChild(WALL_FOLDER_NAME) :: Folder?
 	local unlockWall = if wallFolder then wallFolder:FindFirstChild(UNLOCK_WALL_MODEL_NAME) :: Model? else nil

@@ -10,8 +10,6 @@ export type WeaponDefinition = {
 	label: string,
 	model: Model,
 	displayImages: {["Base" | WeaponMutation]: string?},
-	rarity: Rarity, -- TODO: remove & derive from odds
-
 	tbs: number,
 	damage: number,
 	moa: number,
@@ -23,6 +21,7 @@ export type WeaponDefinition = {
 	maxBulletDistance: number,
 	headshotMultiplier: number?,
 	isExplosive: boolean?,
+	blastRadius: number?, -- if set, overrides the default explosion blast radius (only relevant when isExplosive)
 	normalBulletOverride: string?, -- if set, the normal ammo's audio/visuals are overidden to this instead
 	ricochet: number?,
 	penetrations: number?,
@@ -51,9 +50,6 @@ export type WeaponDefinition = {
 }
 
 local module: {[string]: WeaponDefinition} = {
-	-- TIP: ctrl + shift + E to collapse all tables
-	
-	-- PISTOLS --
 	["Revolver"] = {
 		odds = 1/3,
 		label = "Revolver",
@@ -62,8 +58,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "95961800570575",
 			["Inverted"] = ""
 		},
-
-		rarity = "Uncommon",
 		tbs = 0.75,
 		damage = 6,
 		moa = 1,
@@ -93,8 +87,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "84055856848428",
 			["Inverted"] = ""
 		},
-
-		rarity = "Uncommon",
 		tbs = 0.5,
 		damage = 6,
 		moa = 1,
@@ -117,9 +109,6 @@ local module: {[string]: WeaponDefinition} = {
 		hipBobbingMult = 5,
 	},
 	
-
-
-	
 	["Desert Eagle"] = {
 		odds = 1/30,
 		label = "Desert Eagle",
@@ -128,10 +117,8 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "105940883660495",
 			["Inverted"] = ""
 		},
-		
-		rarity = "Rare",
-		tbs = 0.333,
-		damage = 20,
+		tbs = 1,
+		damage = 17,
 		moa = 1,
 		autoAimRange = 50,
 		bulletVelocity = 200,
@@ -163,10 +150,8 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "132705513037930",
 			["Inverted"] = ""
 		},
-		
-		rarity = "Rare",
-		tbs = 1 / 3,
-		damage = 25,
+		tbs = 0.8,
+		damage = 5,
 		moa = 250,
 		bulletVelocity = 150,
 		maxBulletDistance = 100,
@@ -197,10 +182,8 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "131312847095280",
 			["Inverted"] = ""
 		},
-		
-		rarity = "Legendary",
-		tbs = 1 ,
-		damage = 90,
+		tbs = 1.5 ,
+		damage = 30,
 		moa = 1,
 		autoAimRange = 100,
 		bulletVelocity = 400,
@@ -211,47 +194,12 @@ local module: {[string]: WeaponDefinition} = {
 		anchorPositionSpringDamping = 1.1,
 		aimTargetSpringFrequency = 40,
 		aimTargetSpringDamping = 0.7,
-		kickbackRotationThetaDegrees = 7,
+		kickbackRotationThetaDegrees = 20,
 		kickbackRotationReturnTbsPercent = 0.75,
-		gunRollRecoilMaxDegrees = 5,
-		gunRollRecoilGrowthDegrees = 2,
-		gunRollRecoilNoiseDegrees = 0.75,
-		cameraRollRecoilStrength = 0.1,
-		cameraFovRecoilStrength = 0,
-		hipSwayMult = 2,
-		hipBobbingMult = 5,
-		ricochet = 1,
-		penetrations = 5
-	},
-	
-	["Sniper"] = {
-		odds = 1/800,
-		label = "Sniper",
-		model = GunModels["Sniper"],
-		displayImages = {
-			["Base"] = "131312847095280",
-			["Inverted"] = ""
-		},
-		
-		rarity = "Legendary",
-		tbs = 1 ,
-		damage = 150,
-		moa = 1,
-		autoAimRange = 100,
-		bulletVelocity = 400,
-		maxBulletDistance = 300,
-		autoAimHeadshot = true,
-		aimAngleLimitEnabled = false,
-		anchorPositionSpringFrequency = 20,
-		anchorPositionSpringDamping = 1.1,
-		aimTargetSpringFrequency = 40,
-		aimTargetSpringDamping = 0.7,
-		kickbackRotationThetaDegrees = 7,
-		kickbackRotationReturnTbsPercent = 0.75,
-		gunRollRecoilMaxDegrees = 5,
-		gunRollRecoilGrowthDegrees = 2,
-		gunRollRecoilNoiseDegrees = 0.75,
-		cameraRollRecoilStrength = 0.1,
+		gunRollRecoilMaxDegrees = 8,
+		gunRollRecoilGrowthDegrees = 3,
+		gunRollRecoilNoiseDegrees = 1.25,
+		cameraRollRecoilStrength = 0.18,
 		cameraFovRecoilStrength = 0,
 		hipSwayMult = 2,
 		hipBobbingMult = 5,
@@ -267,12 +215,10 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "85202782858129",
 			["Inverted"] = ""
 		},
-		
-		rarity = "Legendary",
 		tbs = 1 / 3,
-		damage = 25,
+		damage = 7,
 		moa = 150,
-		autoAimRange = 100,
+		autoAimRange = 50,
 		bulletVelocity = 150,
 		maxBulletDistance = 100,
 		aimAngleLimitEnabled = false,
@@ -292,6 +238,41 @@ local module: {[string]: WeaponDefinition} = {
 		pellets = 4,
 	},
 	
+	["Sniper"] = {
+		odds = 1/800,
+		label = "Sniper",
+		model = GunModels["Sniper"],
+		displayImages = {
+			["Base"] = "131312847095280",
+			["Inverted"] = ""
+		},
+		tbs = 2,
+		damage = 50,
+		moa = 1,
+		autoAimRange = 100,
+		bulletVelocity = 400,
+		maxBulletDistance = 300,
+		autoAimHeadshot = true,
+		aimAngleLimitEnabled = false,
+		anchorPositionSpringFrequency = 20,
+		anchorPositionSpringDamping = 1.1,
+		aimTargetSpringFrequency = 40,
+		aimTargetSpringDamping = 0.7,
+		kickbackRotationThetaDegrees = 7,
+		kickbackRotationReturnTbsPercent = 0.75,
+		gunRollRecoilMaxDegrees = 5,
+		gunRollRecoilGrowthDegrees = 2,
+		gunRollRecoilNoiseDegrees = 0.75,
+		cameraRollRecoilStrength = 0.1,
+		cameraFovRecoilStrength = 0,
+		hipSwayMult = 2,
+		hipBobbingMult = 5,
+		ricochet = 1,
+		penetrations = 5
+	},
+	
+
+	
 	["AK 47"] = {
 		odds = 1/6000,
 		label = "AK-47",
@@ -300,10 +281,8 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "76503130490278",
 			["Inverted"] = ""
 		},
-		
-		rarity = "Mythic",
 		tbs = 0.2,
-		damage = 25,
+		damage = 6,
 		moa = 5,
 		autoAimRange = 80,
 		bulletVelocity = 150,
@@ -335,10 +314,8 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "76503130490278",
 			["Inverted"] = ""
 		},
-		
-		rarity = "Mythic",
 		tbs = 0.25,
-		damage = 30,
+		damage = 8,
 		moa = 20,
 		autoAimRange = 100,
 		bulletVelocity = 150,
@@ -372,8 +349,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "85202782858129",
 			["Inverted"] = ""
 		},
-		rarity = "Legendary",
-		
 		tbs = 0.333,
 		damage = 150,
 		moa = 150,
@@ -440,8 +415,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "76503130490278",
 			["Inverted"] = ""
 		},
-		rarity = "Mythic",
-		
 		tbs = 0.1,
 		damage = 21,
 		moa = 5,
@@ -475,8 +448,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "76503130490278",
 			["Inverted"] = ""
 		},
-		rarity = "Mythic",
-		
 		tbs = 0.1,
 		damage = 19,
 		moa = 5,
@@ -510,8 +481,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "76503130490278",
 			["Inverted"] = ""
 		},
-		
-		rarity = "Mythic",
 		tbs = 0.25,
 		damage = 27,
 		moa = 20,
@@ -547,8 +516,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "76503130490278",
 			["Inverted"] = ""
 		},
-		
-		rarity = "Mythic",
 		tbs = 0.25,
 		damage = 65,
 		moa = 20,
@@ -584,7 +551,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "76503130490278",
 			["Inverted"] = ""
 		},
-		rarity = "Godly",
 		tbs = 2,
 		damage = 10000,
 		moa = 20,
@@ -619,8 +585,6 @@ local module: {[string]: WeaponDefinition} = {
 			["Base"] = "78450886137364",
 			["Inverted"] = ""
 		},
-		rarity = "Secret",
-
 		tbs = 0.03,
 		damage = 15,
 		moa = 50,
@@ -645,7 +609,6 @@ local module: {[string]: WeaponDefinition} = {
 		hipSwayMult = 2,
 		hipBobbingMult = 5,
 	},
-
 }
 
 
