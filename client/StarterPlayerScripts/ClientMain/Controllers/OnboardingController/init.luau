@@ -49,6 +49,7 @@ OnboardingController.CurrentStep = 1
 
 local BeamTrove = Trove.new()
 local HighlightStrokeTrove = Trove.new()
+local PointerHandTrove = Trove.new()
 
 --------------------------------------------------
 -- VARIABLES --
@@ -64,7 +65,7 @@ local HighlightStrokeTrove = Trove.new()
 local function createHintBanner(textString: string)
 	local textLabel = bannerFrame:WaitForChild("TextLabel")
 	bannerFrame.Visible = textString
-	textLabel.Text = textString
+	textLabel.Text = textString or ""
 end
 
 local function _setup()
@@ -139,6 +140,7 @@ function OnboardingController:ShowArrow(part: BasePart)
 	print("[OnboardingController] Got beam for ", part)
 
 	BeamTrove:Clean()
+	PointerHandTrove:Clean()
 	if not part then return end
 
 
@@ -204,6 +206,46 @@ function OnboardingController:ShowHighlightStroke(guiObject: GuiObject, displayT
 
 end
 
+function OnboardingController:ShowPointerHand(guiObject: GuiObject, rotation: number?): ImageLabel
+	PointerHandTrove:Clean()
+	if not guiObject then return end
+
+	rotation = rotation or 0
+	local rad = math.rad(rotation)
+	local sin, cos = math.sin(rad), math.cos(rad)
+
+	-- Edge of the target the hand sits on, in the target's own 0-1 space.
+	local edgeScale = Vector2.new(0.5 - 0.5 * sin, 0.5 + 0.5 * cos)
+	local targetAbsolute = guiObject.AbsolutePosition + guiObject.AbsoluteSize * edgeScale
+
+	-- Convert to OnboardingGui scale space so it tracks resizes.
+	local parentPos  = OnboardingGui.AbsolutePosition
+	local parentSize = OnboardingGui.AbsoluteSize
+	local restingPosition = UDim2.fromScale(
+		(targetAbsolute.X - parentPos.X) / parentSize.X,
+		(targetAbsolute.Y - parentPos.Y) / parentSize.Y
+	)
+
+	local pointerHand = script:WaitForChild("PointerHand"):Clone()
+	PointerHandTrove:Add(pointerHand)
+	pointerHand.AnchorPoint = Vector2.new(0.5, 0.5)
+	pointerHand.Rotation = rotation
+	pointerHand.Position = restingPosition
+	pointerHand.Visible = true
+	pointerHand.Parent = OnboardingGui
+
+	-- Bounce along the pointer's axis (away from the target), constant px on every device.
+	local BOUNCE_OFFSET = 100
+	local bounceGoal = restingPosition + UDim2.fromOffset(-sin * BOUNCE_OFFSET, cos * BOUNCE_OFFSET)
+	local bounceTween = TweenService:Create(
+		pointerHand,
+		TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+		{ Position = bounceGoal }
+	)
+	bounceTween:Play()
+
+	return pointerHand
+end
 
 --------------------------------------------------
 -- MAIN --
@@ -224,6 +266,9 @@ function OnboardingController:Start()
 		self:AdvanceStep(player)
 	end)
 	
+	remotes.StepAdvance.OnClientEvent:Connect(function(stepName)
+		self:OnGameEvent(stepName)
+	end)
 
 end
 

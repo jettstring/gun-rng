@@ -697,6 +697,8 @@ local function displayRollSpin(rollData: RollData, rollResults: {ColumnResults},
 	-- Fire Onboarding Step
 	if RollController.Controllers.OnboardingController.OnboardingComplete == false then
 		RollController.Controllers.OnboardingController:OnGameEvent("first_roll")
+		RollController.Controllers.OnboardingController:OnGameEvent("second_roll")
+		RollController.Controllers.OnboardingController:OnGameEvent("third_roll")
 	end
 end
 
@@ -790,8 +792,8 @@ local function _bindOnboardingSteps()
 	local rollSteps = { "first_roll", "second_roll", "third_roll" }
 	for _, stepName in rollSteps do
 		onboardingController.StepEventFunctions[stepName] = function()
-			-- TODO: create a pointing icon to the roll button
-			print("PRESS THE ROLL BUTTTON!")
+			onboardingController:ShowHighlightStroke(rollButton, "Flash")
+			onboardingController:ShowPointerHand(rollButton, 180)
 		end
 	end
 end

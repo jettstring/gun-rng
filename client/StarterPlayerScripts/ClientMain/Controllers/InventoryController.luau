@@ -30,6 +30,9 @@ local addAllFrame = addComponentDisplay:WaitForChild("AddAllFrame")
 -- 
 local Popups = playerGui:WaitForChild("Popups")
 local addedItemDisplay = Popups:WaitForChild("AddedItemDisplay")
+-- 
+local ScreenElements = playerGui:WaitForChild("ScreenElements")
+local inventoryButton = ScreenElements.Hotbar.InventoryButton
 
 
 local Modules = ReplicatedStorage:WaitForChild("Modules")
@@ -188,8 +191,20 @@ local function _setupUI()
 	end
 	
 	inventoryFrame:GetPropertyChangedSignal("Visible"):Connect(function()
+		local onboardingController = InventoryController.Controllers.OnboardingController
+		
 		if inventoryFrame.Visible then
 			InventoryController:OpenDisplay("Guns")
+			
+			-- Fire Onboarding Step
+			if onboardingController.OnboardingComplete == false then
+				onboardingController:OnGameEvent("open_backpack")
+			end
+		else
+			-- Fire Onboarding Step
+			if onboardingController.OnboardingComplete == false then
+				onboardingController:OnGameEvent("close_backpack")
+			end
 		end
 	end)
 	
@@ -223,6 +238,53 @@ local function _setupUI()
 	addComponentDisplay.BackButton.Activated:Connect(function()
 		InventoryController:OpenDisplay("SelectGunList")
 	end)
+end
+
+local function _bindOnboardingSteps()
+	local onboardingController = InventoryController.Controllers.OnboardingController
+
+	-- backpack
+	onboardingController.StepEventFunctions["open_backpack"] = function()
+		onboardingController:ShowHighlightStroke(inventoryButton, "Flash")
+		onboardingController:ShowPointerHand(inventoryButton, 180)
+	end
+	
+	
+	-- equip gun
+	onboardingController.StepEventFunctions["equip_gun"] = function()
+		-- Resolve first uneqipped gun frame
+		local owned = InventoryController.InventoryData.Weapons.Owned
+		local unequippedDataList = {}
+		local dataToUnequipped = {} -- WeaponData -> {key, value}
+		for weaponKey, weaponValue in owned do
+			local data = InventoryUtil.getWeaponData(weaponKey, weaponValue)
+			table.insert(unequippedDataList, data)
+			dataToUnequipped[data] = { key = weaponKey, value = weaponValue }
+		end
+
+		local sortedUnequipped = InventoryUtil.getSortedWeapons(unequippedDataList)
+		local bestWeaponData = sortedUnequipped[1]
+		if bestWeaponData then
+			local entry = dataToUnequipped[bestWeaponData]
+			local weaponKey, weaponValue = entry.key, entry.value
+			local frameId = "Owned:" .. weaponKey
+
+			local existingFrame: WeaponFrameObject = WeaponFrames[frameId]
+			if existingFrame and not existingFrame.isEquipped then
+				onboardingController:ShowHighlightStroke(existingFrame.frameButton, "Flash")
+				onboardingController:ShowPointerHand(existingFrame.frameButton, 180)
+			end
+		end
+	end
+	
+	-- Close backpack
+	onboardingController.StepEventFunctions["close_backpack"] = function()
+		local closeButton = banner.Top.Close
+		onboardingController:ShowHighlightStroke(closeButton, "Flash")
+		onboardingController:ShowPointerHand(closeButton, 225)
+	end
+
+	
 end
 
 --------------------------------------------------
@@ -799,6 +861,7 @@ end
 
 function InventoryController:Init(controllers)
 	self.Controllers = controllers
+	_bindOnboardingSteps()
 	
 	equipBestButton.Activated:Connect(function()
 		remotes.EquipBestWeapons:FireServer()

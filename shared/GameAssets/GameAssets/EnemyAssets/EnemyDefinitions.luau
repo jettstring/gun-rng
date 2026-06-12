@@ -50,6 +50,7 @@ local module: { [EnemyVariant]: EnemyDefinition } = {
 			"Smart",
 			"Incendiary",
 			"Explosive",
+			"Scrap",
 		},
 	},
 
@@ -69,6 +70,8 @@ local module: { [EnemyVariant]: EnemyDefinition } = {
 			"Luck Potion",
 			"Money Potion",
 			"Smart",
+			"Scrap",
+			"Tech",
 		},
 	},
 
@@ -92,6 +95,8 @@ local module: { [EnemyVariant]: EnemyDefinition } = {
 			"Roll Speed Potion",
 			"Smart",
 			"Incendiary",
+			"Scrap",
+			"Tech",
 		},
 	},
 
@@ -115,6 +120,9 @@ local module: { [EnemyVariant]: EnemyDefinition } = {
 			"Smart",
 			"Incendiary",
 			"Explosive",
+			"Scrap",
+			"Tech",
+			"Crystal"
 		},
 	},
 }

@@ -21,6 +21,9 @@ local loadOrder = {
 	{"CloverEffect", require(Controllers.CloverEffect)},
 	{"SettingsController", require(Controllers.SettingsController) },
 	{"OnboardingController", require(Controllers.OnboardingController) },
+	{"ScreenPromptController", require(Controllers.ScreenPromptController) },
+	{"MonetizationController", require(Controllers.MonetizationController) },
+	{"RobuxShopController", require(Controllers.RobuxShopController) },
 }
 
 -- Build named lookup

@@ -1,6 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
+local CollectionService = game:GetService("CollectionService")
+
 local Players = game:GetService("Players")
 
 --------------------------------------------------
@@ -307,11 +309,13 @@ local function normalizeTrailLifetimes(trails: {ProjectileTrail}, velocity: Vect
 	end
 
 	for _, projectileTrail in ipairs(trails) do
+		if projectileTrail.trail:HasTag("UnlimitedTrail") then
+			continue
+		end
 		local maxLength = projectileTrail.maxLength
 		if not maxLength then
 			continue
 		end
-
 		projectileTrail.trail.Lifetime = maxLength / speed
 	end
 end
@@ -460,9 +464,6 @@ local function playProjectileEffect(impactTemplate: BasePart?, event: {[string]:
 	end
 
 	-- Special-case audio cues are routed through the dedicated audio package.
-	if soundType == "explosion" then
-		ProjectileAudio.playExplosion(effectPosition)
-	end
 	if effectType == "forcefield" then
 		ProjectileAudio.playForceFieldHit(effectPosition)
 	end

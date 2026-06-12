@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
+local SoundService = game:GetService("SoundService")
 
 --------------------------------------------------
 -- DEPENDENCIES --
@@ -12,7 +13,7 @@ local AmmoTypes = require(ReplicatedStorage.Util.AmmoTypes)
 local InventoryUtil = require(ReplicatedStorage.Util.InventoryUtil)
 local WeaponUtil = require(ReplicatedStorage.Util.WeaponUtil)
 local WeaponDefinitions = require(ReplicatedStorage.GameAssets.WeaponAssets.WeaponDefinitions)
-
+local Gigantix = require(ReplicatedStorage.Packages.Gigantix)
 local remotesFolder = ReplicatedStorage:WaitForChild("Remotes")
 local gunKitRemotes = remotesFolder:WaitForChild("GunKit")
 local remotes = {
@@ -23,6 +24,10 @@ local remotes = {
 }
 
 local GunEvent = ReplicatedStorage:WaitForChild("Remotes").GunKit.GunEvent
+
+local AMMO_EQUIPPED_COLOR = Color3.fromRGB(26, 255, 0)
+
+local dryFireSound = SoundService:WaitForChild("GunSounds"):WaitForChild("DryFire")
 
 --------------------------------------------------
 -- TYPES --
@@ -207,6 +212,28 @@ local function resolveAutoEquipFallback(profile: {[string]: any}, ammoData: {[st
 	return fallback
 end
 
+
+
+local function notifyAmmoEquipped(player: Player, profile: {[string]: any}, ammoType: string)
+	local ammoCount = getAmmoCount(profile, ammoType)
+	local text = if AmmoTypes.isConsumable(ammoType)
+		then `Using {ammoType} bullets x{Gigantix.getShort(Gigantix.stringToNumber(tostring(ammoCount)))}`
+		else `Using {ammoType} bullets`
+	
+	if typeof(ammoCount) == "number" and ammoCount > 0 then
+		GunService.Services.NotificationService:Notify(player, text, AMMO_EQUIPPED_COLOR)
+	else
+		GunService.Services.NotificationService:Error(player, `Out of {ammoType} bullets!`, dryFireSound)
+	end
+end
+
+local function equipAmmo(player: Player, profile: {[string]: any}, ammoData: {[string]: any}, newType: string)
+	if ammoData.SelectedType ~= newType then
+		ammoData.SelectedType = newType
+		notifyAmmoEquipped(player, profile, newType)
+	end
+end
+
 local function consumeSelectedAmmo(player: Player): (boolean, string)
 	local profile = getProfile(player)
 	if not profile then
@@ -221,7 +248,8 @@ local function consumeSelectedAmmo(player: Player): (boolean, string)
 
 	local amount = getAmmoCount(profile, ammoType)
 	if amount <= 0 then
-		ammoData.SelectedType = resolveAutoEquipFallback(profile, ammoData)
+		GunService.Services.NotificationService:Error(player, `Out of {ammoType} bullets!`, dryFireSound)
+		equipAmmo(player, profile, ammoData, resolveAutoEquipFallback(profile, ammoData))
 		sendAmmoState(player, profile)
 		return false, ammoType
 	end
@@ -231,7 +259,8 @@ local function consumeSelectedAmmo(player: Player): (boolean, string)
 
 	if amount <= 0 then
 		items[ammoType] = nil
-		ammoData.SelectedType = resolveAutoEquipFallback(profile, ammoData)
+		GunService.Services.NotificationService:Error(player, `Out of {ammoType} bullets!`, dryFireSound)
+		equipAmmo(player, profile, ammoData, resolveAutoEquipFallback(profile, ammoData))
 		sendAmmoState(player, profile)
 		remotes.InventoryUpdated:FireClient(player, "Items", items)
 	else
@@ -867,7 +896,7 @@ function GunService:SetSelectedAmmoType(player: Player, ammoType: string): strin
 		return nil
 	end
 
-	ammoData.SelectedType = ammoType
+	equipAmmo(player, profile, ammoData, ammoType)
 	sendAmmoState(player, profile)
 
 	return ammoType
@@ -934,7 +963,7 @@ function GunService:OnAmmoItemAdded(player: Player, ammoType: string)
 
 	local ammoData = getAmmoData(profile)
 	if ammoData.AutoEquip[ammoType] then
-		ammoData.SelectedType = ammoType
+		equipAmmo(player, profile, ammoData, ammoType)
 	end
 
 	sendAmmoState(player, profile)

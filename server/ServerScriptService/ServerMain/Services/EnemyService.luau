@@ -1000,6 +1000,8 @@ local function awardEnemy(record: EnemyRecord)
 	local dataService = EnemyService.Services.DataService
 
 	if dataService then
+		dataService:EnemyKilled(record.owner, record.definition.id)
+
 		if cashReward > 0 then
 			dataService:IncrementCurrency(record.owner, "Money", cashReward, "enemy", true, true)
 		end
@@ -1030,6 +1032,8 @@ local function awardEnemy(record: EnemyRecord)
 	end
 
 	createDrops(record.owner, sourcePosition, specs)
+	
+	EnemyService.Services.OnboardingService:OnGameEvent(record.owner, "kill_first_enemy")
 end
 
 local function getPlayerEnemyCap(player: Player): number

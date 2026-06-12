@@ -237,7 +237,9 @@ end
 function UpgradeService:GetBackpackUnlocked(player: Player): boolean
 	return (getPlayerUpgradeStat(self, player, "backpackUnlocked") :: number) >= 1
 end
-
+function UpgradeService:GetAutorollUnlocked(player: Player): boolean
+	return (getPlayerUpgradeStat(self, player, "autoRollUnlocked") :: number) >= 1
+end
 function UpgradeService:GetLuck(player: Player): number
 	return getPlayerUpgradeStat(self, player, "luck") :: number
 end
@@ -449,7 +451,11 @@ function UpgradeService:UnlockSkill(player: Player, skillId: any): UnlockSkillRe
 			price = price,
 		})
 	end
-
+	
+	if skillId == "Auto Roll" then
+		UpgradeService.Services.OnboardingService:OnGameEvent(player, "unlock_auto_roll")
+	end
+	
 	return {
 		success = true,
 		ownedSkills = copySkillIdMap(ownedSkills),

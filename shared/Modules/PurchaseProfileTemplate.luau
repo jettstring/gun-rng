@@ -1,7 +1,12 @@
-return {
-	StoredPurchases = {},
-	GiftedPurchases = {},	
-	TotalGifted = 0,
-	GiftPopup = {},
-	RobuxSpent = 0, 
+
+local PurchaseProfileTemplate = {
+	storedPurchases = {},
+	giftedPurchases = {},	
+	totalGifted = 0,
+	giftPopup = {},
+	robuxSpent = 0,
 }
+
+export type PurchaseProfile = typeof(PurchaseProfileTemplate)
+
+return PurchaseProfileTemplate

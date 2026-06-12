@@ -25,7 +25,7 @@ local HOVER_SCALE_UP = 1.1
 local CLICK_SCALE_UP =1.13
 
 -- Sound configuration
-local UISounds = SoundService:WaitForChild("UI")
+local UISounds = SoundService:WaitForChild("UISounds")
 local SOUND_CONFIG = {
 	Hover = UISounds.UIHover,
 	Down = UISounds.UIDown, 

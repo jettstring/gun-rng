@@ -70,6 +70,10 @@ end
 -- MAIN --
 --------------------------------------------------
 
+function OnboardingService:OnGameEvent(player: Player, stepName: string)
+	remotes.StepAdvance:FireClient(player, stepName)
+end
+
 function OnboardingService:Init(services)
 	self.Services = services
 	

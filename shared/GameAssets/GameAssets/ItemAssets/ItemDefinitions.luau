@@ -90,18 +90,36 @@ local module: {[string]: ItemDefinition} = {
 	} :: BoostDefinition,
 	
 	-- Components -- 
-	["Scrap Metal"] = {
+	["Scrap"] = {
 		itemType = "Component",
 		itemDescription = "Adds %d XP to a weapon.",
 		displayImage = "133397058036491",
 		dropChance = 0.5, 
 		dropWeight = 3,
-		model = ItemModels["LuckBoost"],
+		model = ItemModels["Scrap"],
 		--..
 		addedXP = 15
 	} :: ComponentDefinition,
-	
-	
+	["Tech"] = {
+		itemType = "Component",
+		itemDescription = "Adds %d XP to a weapon.",
+		displayImage = "133397058036491",
+		dropChance = 0.5, 
+		dropWeight = 3,
+		model = ItemModels["Tech"],
+		--..
+		addedXP = 30
+	} :: ComponentDefinition,
+	["Crystal"] = {
+		itemType = "Component",
+		itemDescription = "Adds %d XP to a weapon.",
+		displayImage = "133397058036491",
+		dropChance = 0.5, 
+		dropWeight = 3,
+		model = ItemModels["Crystal"],
+		--..
+		addedXP = 75
+	} :: ComponentDefinition,
 	
 	-- Dice -- 
 	["Jackpot Dice"] = {

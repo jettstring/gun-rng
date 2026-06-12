@@ -8,6 +8,112 @@
       "pluginManaged": true,
       "children": [
         {
+          "name": "StarterCharacterScripts",
+          "className": "StarterCharacterScripts",
+          "pluginManaged": true,
+          "children": [
+            {
+              "name": "ClientMoneyEffects",
+              "className": "LocalScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/ClientMoneyEffects.local.luau"
+              ]
+            },
+            {
+              "name": "GunKit",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "Framework",
+                  "className": "LocalScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/init.local.luau"
+                  ],
+                  "children": [
+                    {
+                      "name": "GunClient",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/GunClient/init.luau"
+                      ],
+                      "children": [
+                        {
+                          "name": "GuiChanger",
+                          "className": "ModuleScript",
+                          "pluginManaged": true,
+                          "filePaths": [
+                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/GunClient/GuiChanger.luau"
+                          ]
+                        },
+                        {
+                          "name": "MuzzleFlash",
+                          "className": "ModuleScript",
+                          "pluginManaged": true,
+                          "filePaths": [
+                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/GunClient/MuzzleFlash.luau"
+                          ]
+                        },
+                        {
+                          "name": "Spring",
+                          "className": "ModuleScript",
+                          "pluginManaged": true,
+                          "filePaths": [
+                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/GunClient/Spring.luau"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "RangeIndicatorManager",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/RangeIndicatorManager.luau"
+                      ]
+                    },
+                    {
+                      "name": "EnemyTargeting",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/EnemyTargeting.luau"
+                      ]
+                    },
+                    {
+                      "name": "ExplicitCrosshair",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/ExplicitCrosshair.luau"
+                      ]
+                    },
+                    {
+                      "name": "RemoteGunVisualizer",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/RemoteGunVisualizer.luau"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "Hitmarkers",
+                  "className": "LocalScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Hitmarkers.local.luau"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
           "name": "StarterPlayerScripts",
           "className": "StarterPlayerScripts",
           "pluginManaged": true,
@@ -184,6 +290,47 @@
                       "filePaths": [
                         "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/OnboardingController/init.luau"
                       ]
+                    },
+                    {
+                      "name": "ScreenPromptController",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/ScreenPromptController/init.luau"
+                      ],
+                      "children": [
+                        {
+                          "name": "PromptEffects",
+                          "className": "Folder",
+                          "pluginManaged": true,
+                          "children": [
+                            {
+                              "name": "Product",
+                              "className": "ModuleScript",
+                              "pluginManaged": true,
+                              "filePaths": [
+                                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/ScreenPromptController/PromptEffects/Product.luau"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "RobuxShopController",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/RobuxShopController.luau"
+                      ]
+                    },
+                    {
+                      "name": "MonetizationController",
+                      "className": "ModuleScript",
+                      "pluginManaged": true,
+                      "filePaths": [
+                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterPlayerScripts/ClientMain/Controllers/MonetizationController.luau"
+                      ]
                     }
                   ]
                 }
@@ -205,112 +352,6 @@
               ]
             }
           ]
-        },
-        {
-          "name": "StarterCharacterScripts",
-          "className": "StarterCharacterScripts",
-          "pluginManaged": true,
-          "children": [
-            {
-              "name": "ClientMoneyEffects",
-              "className": "LocalScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/ClientMoneyEffects.local.luau"
-              ]
-            },
-            {
-              "name": "GunKit",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "Framework",
-                  "className": "LocalScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/init.local.luau"
-                  ],
-                  "children": [
-                    {
-                      "name": "GunClient",
-                      "className": "ModuleScript",
-                      "pluginManaged": true,
-                      "filePaths": [
-                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/GunClient/init.luau"
-                      ],
-                      "children": [
-                        {
-                          "name": "GuiChanger",
-                          "className": "ModuleScript",
-                          "pluginManaged": true,
-                          "filePaths": [
-                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/GunClient/GuiChanger.luau"
-                          ]
-                        },
-                        {
-                          "name": "MuzzleFlash",
-                          "className": "ModuleScript",
-                          "pluginManaged": true,
-                          "filePaths": [
-                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/GunClient/MuzzleFlash.luau"
-                          ]
-                        },
-                        {
-                          "name": "Spring",
-                          "className": "ModuleScript",
-                          "pluginManaged": true,
-                          "filePaths": [
-                            "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/GunClient/Spring.luau"
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "name": "RangeIndicatorManager",
-                      "className": "ModuleScript",
-                      "pluginManaged": true,
-                      "filePaths": [
-                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/RangeIndicatorManager.luau"
-                      ]
-                    },
-                    {
-                      "name": "EnemyTargeting",
-                      "className": "ModuleScript",
-                      "pluginManaged": true,
-                      "filePaths": [
-                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/EnemyTargeting.luau"
-                      ]
-                    },
-                    {
-                      "name": "ExplicitCrosshair",
-                      "className": "ModuleScript",
-                      "pluginManaged": true,
-                      "filePaths": [
-                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/ExplicitCrosshair.luau"
-                      ]
-                    },
-                    {
-                      "name": "RemoteGunVisualizer",
-                      "className": "ModuleScript",
-                      "pluginManaged": true,
-                      "filePaths": [
-                        "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Framework/RemoteGunVisualizer.luau"
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "Hitmarkers",
-                  "className": "LocalScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/client/StarterCharacterScripts/GunKit/Hitmarkers.local.luau"
-                  ]
-                }
-              ]
-            }
-          ]
         }
       ]
     },
@@ -319,155 +360,6 @@
       "className": "ReplicatedStorage",
       "pluginManaged": true,
       "children": [
-        {
-          "name": "Util",
-          "className": "Folder",
-          "pluginManaged": true,
-          "children": [
-            {
-              "name": "WeaponUtil",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/WeaponUtil.luau"
-              ]
-            },
-            {
-              "name": "RollUtil",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/RollUtil.luau"
-              ]
-            },
-            {
-              "name": "AmmoTypes",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/AmmoTypes.luau"
-              ]
-            },
-            {
-              "name": "InventoryUtil",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/InventoryUtil.luau"
-              ]
-            },
-            {
-              "name": "RebirthUtil",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/RebirthUtil.luau"
-              ]
-            },
-            {
-              "name": "IndexUtil",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/IndexUtil.luau"
-              ]
-            },
-            {
-              "name": "EnemyVisibility",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/EnemyVisibility.luau"
-              ]
-            },
-            {
-              "name": "EnemySteering",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/EnemySteering.luau"
-              ]
-            },
-            {
-              "name": "GraphTheory",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "Edge",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/GraphTheory/Edge.luau"
-                  ]
-                },
-                {
-                  "name": "Heap",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/GraphTheory/Heap.luau"
-                  ]
-                },
-                {
-                  "name": "Graph",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/GraphTheory/Graph.luau"
-                  ]
-                },
-                {
-                  "name": "Node",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/GraphTheory/Node.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "Skills",
-              "className": "Folder",
-              "pluginManaged": true,
-              "children": [
-                {
-                  "name": "Skill",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/Skills/Skill.luau"
-                  ]
-                },
-                {
-                  "name": "SkillTree",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/Skills/SkillTree.luau"
-                  ]
-                },
-                {
-                  "name": "SkillDefinitions",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/Skills/SkillDefinitions.luau"
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "SettingsUtil",
-              "className": "ModuleScript",
-              "pluginManaged": true,
-              "filePaths": [
-                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/SettingsUtil.luau"
-              ]
-            }
-          ]
-        },
         {
           "name": "Modules",
           "className": "Folder",
@@ -2630,6 +2522,186 @@
                   ]
                 }
               ]
+            },
+            {
+              "name": "MonetizationAssets",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "Products",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/GameAssets/GameAssets/MonetizationAssets/Products.luau"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Util",
+          "className": "Folder",
+          "pluginManaged": true,
+          "children": [
+            {
+              "name": "WeaponUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/WeaponUtil.luau"
+              ]
+            },
+            {
+              "name": "RollUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/RollUtil.luau"
+              ]
+            },
+            {
+              "name": "AmmoTypes",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/AmmoTypes.luau"
+              ]
+            },
+            {
+              "name": "InventoryUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/InventoryUtil.luau"
+              ]
+            },
+            {
+              "name": "RebirthUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/RebirthUtil.luau"
+              ]
+            },
+            {
+              "name": "IndexUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/IndexUtil.luau"
+              ]
+            },
+            {
+              "name": "EnemyVisibility",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/EnemyVisibility.luau"
+              ]
+            },
+            {
+              "name": "EnemySteering",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/EnemySteering.luau"
+              ]
+            },
+            {
+              "name": "SettingsUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/SettingsUtil.luau"
+              ]
+            },
+            {
+              "name": "GraphTheory",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "Edge",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/GraphTheory/Edge.luau"
+                  ]
+                },
+                {
+                  "name": "Heap",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/GraphTheory/Heap.luau"
+                  ]
+                },
+                {
+                  "name": "Graph",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/GraphTheory/Graph.luau"
+                  ]
+                },
+                {
+                  "name": "Node",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/GraphTheory/Node.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Skills",
+              "className": "Folder",
+              "pluginManaged": true,
+              "children": [
+                {
+                  "name": "Skill",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/Skills/Skill.luau"
+                  ]
+                },
+                {
+                  "name": "SkillTree",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/Skills/SkillTree.luau"
+                  ]
+                },
+                {
+                  "name": "SkillDefinitions",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/Skills/SkillDefinitions.luau"
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "ServerLuckUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/ServerLuckUtil.luau"
+              ]
+            },
+            {
+              "name": "MonetizationUtil",
+              "className": "ModuleScript",
+              "pluginManaged": true,
+              "filePaths": [
+                "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/shared/Util/MonetizationUtil.luau"
+              ]
             }
           ]
         }
@@ -2659,14 +2731,6 @@
                   "pluginManaged": true,
                   "filePaths": [
                     "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/server/ServerScriptService/ServerMain/Services/DataService.luau"
-                  ]
-                },
-                {
-                  "name": "Template",
-                  "className": "ModuleScript",
-                  "pluginManaged": true,
-                  "filePaths": [
-                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/server/ServerScriptService/ServerMain/Services/Template.luau"
                   ]
                 },
                 {
@@ -2804,6 +2868,22 @@
                   "pluginManaged": true,
                   "filePaths": [
                     "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/server/ServerScriptService/ServerMain/Services/OnboardingService.luau"
+                  ]
+                },
+                {
+                  "name": "MonetizationService",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/server/ServerScriptService/ServerMain/Services/MonetizationService.luau"
+                  ]
+                },
+                {
+                  "name": "ServerLuckService",
+                  "className": "ModuleScript",
+                  "pluginManaged": true,
+                  "filePaths": [
+                    "c:/Users/jstri/Documents/Development/Projects/GunRNG/code/server/ServerScriptService/ServerMain/Services/ServerLuckService.luau"
                   ]
                 }
               ]

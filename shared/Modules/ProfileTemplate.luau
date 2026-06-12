@@ -45,7 +45,15 @@ return {
 	-- Persisted data -- 
 	LastSessionTimestamp = nil,
 	Stats = {
+		-- General
 		Playtime = 0,
+		
+		-- Enemy stats 
+		EnemiesKilled = 0,
+		NormalEnemiesKilled = 0,
+		BigEnemiesKilled = 0,
+		ShinyEnemiesKilled = 0,
+		InvertedEnemiesKilled = 0,
 	},
 
 	-- Rewards 

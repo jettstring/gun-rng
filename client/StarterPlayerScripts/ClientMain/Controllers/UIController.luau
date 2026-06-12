@@ -19,7 +19,7 @@ local player = Players.LocalPlayer
 local playerGui = player.PlayerGui
 local camera = workspace.CurrentCamera
 
-local UIsfx = SoundService:WaitForChild("UI")
+local UIsfx = SoundService:WaitForChild("UISounds")
 
 -- GUIs 
 local Displays = playerGui:WaitForChild("Displays")
@@ -31,6 +31,7 @@ local displayFrames = {
 	Inventory = Displays:WaitForChild("Inventory"),
 	Rebirth = Displays:WaitForChild("Rebirth"),
 	Settings = Displays:WaitForChild("Settings"),
+	RobuxShop = Displays:WaitForChild("RobuxShop"),
 }
 
 local screenElements = {
@@ -150,6 +151,10 @@ local function _setupButtons()
 		UIController:OpenFrame(displayFrames.Rebirth)
 	end)
 	
+	screenElements.LeftOptions.ShopButton.Activated:Connect(function()
+		UIController:OpenFrame(displayFrames.RobuxShop)
+	end)
+	
 	screenElements.LeftOptions.IndexButton.Activated:Connect(function()
 		UIController.Controllers.IndexController:Open()
 	end)
@@ -166,6 +171,8 @@ local function _setupCollectionTags()
 		end)
 	end
 end
+
+
 
 --------------------------------------------------
 -- PUBLIC FUNCTIONS --

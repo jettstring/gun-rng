@@ -184,6 +184,7 @@ function CustomAnalytics:Start()
 
 	Players.PlayerRemoving:Connect(function(player)
 		self:FlushEnemyIncome(player.UserId, "exit")
+		self:PlayerExit(player)
 	end)
 
 	game:BindToClose(function()
@@ -232,9 +233,46 @@ export type PlayerEnterExit = {
 function CustomAnalytics:PlayerEnter(playerId: number, event: PlayerEnterExit)
 	self:addEvent("enter", playerId, event)
 end
-function CustomAnalytics:PlayerExit(playerId: number, event: PlayerEnterExit)
-	self:addEvent("exit", playerId, event)
-	self.playerSessionIds[playerId] = nil
+-- Fired on PlayerRemoving. Captures the player's final state, plus OPTIONAL payer
+-- segment info from MonetizationService (every field optional — absent if the
+-- service isn't registered yet, or has no segment data). Enum segments are stored
+-- by name so they serialize to JSON.
+function CustomAnalytics:PlayerExit(player: Player)
+	if not isAnalyticsEnabled() then
+		return
+	end
+
+	local userId = player.UserId
+
+	local ok, err = pcall(function()
+		local data: { [string]: any } = {
+			playerState = self:buildPlayerState(player, true),
+		}
+
+		local monetizationService = self.Services and self.Services.MonetizationService
+		if monetizationService then
+			local gotInfo, info = pcall(function()
+				return monetizationService:GetPayerInfo(player)
+			end)
+			if gotInfo and typeof(info) == "table" then
+				local function enumName(value: any): any
+					return if typeof(value) == "EnumItem" then value.Name else value
+				end
+				data.payerRestricted = info.paidRandomItemsRestricted
+				data.activePayerStatus = enumName(info.activePayerStatus)
+				data.whenUserFirstPlayed = enumName(info.whenUserFirstPlayed)
+				data.platformSpenderStatus = enumName(info.platformSpenderStatus)
+			end
+		end
+
+		self:addEvent("exit", userId, data)
+	end)
+
+	if not ok then
+		warn("[CustomAnalytics] PlayerExit failed:", err)
+	end
+
+	self.playerSessionIds[userId] = nil
 end
 
 export type BuyGamepassEvent = {

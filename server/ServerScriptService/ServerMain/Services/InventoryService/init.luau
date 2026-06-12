@@ -284,7 +284,9 @@ function InventoryService:EquipWeapon(player: Player, weaponKey: string): boolea
 	remotes.InventoryUpdated:FireClient(player, "Weapons", profile.Inventory.Weapons, maxSlots)
 	self.Services.GunService:SyncEquippedWeapons(player)
 	
+	InventoryService.Services.OnboardingService:OnGameEvent(player, "equip_gun")
 	print("[EquipWeapon] player", player, "weaponKey", weaponKey)
+
 	return true
 end
 

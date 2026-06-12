@@ -55,8 +55,6 @@ local AUTO_AIM_HEADSHOT_CHANCE_ATTRIBUTE = "autoAimHeadshotChance"
 local TARGET_HIGHLIGHT_TEMPLATE_NAME = "TargetHighlight"
 local TARGET_HIGHLIGHT_FOOTPRINT_SCALE = 1.15
 local POSITIONING_FOLDER_NAME = "GunPositioning"
-local IDLE_POSITIONING_SET_NAME = "Idle"
-local AIMING_POSITIONING_SET_NAME = "Aiming"
 local POSITIONING_ROOT_PART_NAME = "RootPart"
 local FALLBACK_BACK_ANCHOR_LOCAL_CFRAME = CFrame.new(0, 3, 6)
 local FALLBACK_FRONT_ANCHOR_LOCAL_CFRAME = CFrame.new(0, 3, -6)
@@ -592,16 +590,39 @@ local function getPositioningSet(container: Instance?): PositioningSet
 	}
 end
 
-local function getGunPositioningData(): (PositioningSet?, PositioningSet?)
+-- Gun layout is chosen by how many guns the player is holding: the GunPositioning
+-- folder holds one child per gun count ("1", "2", "3", ...), each containing that
+-- many slot nodes. Falls back to the closest available count when there is no exact
+-- match (e.g. the player holds more guns than any authored layout).
+local function getGunPositioningData(gunCount: number): PositioningSet?
 	local positioningFolder = ReplicatedStorage.GameAssets.WeaponAssets:FindFirstChild(POSITIONING_FOLDER_NAME)
 	if not positioningFolder then
-		return nil, nil
+		return nil
 	end
 
-	local idleSet = findChildCaseInsensitive(positioningFolder, IDLE_POSITIONING_SET_NAME)
-	local aimingSet = findChildCaseInsensitive(positioningFolder, AIMING_POSITIONING_SET_NAME)
+	local desiredCount = math.max(math.floor(gunCount), 1)
+	local countFolder = findChildCaseInsensitive(positioningFolder, tostring(desiredCount))
 
-	return getPositioningSet(idleSet), getPositioningSet(aimingSet)
+	if not countFolder then
+		local bestCount: number? = nil
+		for _, child in positioningFolder:GetChildren() do
+			local childCount = tonumber(child.Name)
+			if not childCount then
+				continue
+			end
+
+			if not bestCount or math.abs(childCount - desiredCount) < math.abs(bestCount - desiredCount) then
+				bestCount = childCount
+				countFolder = child
+			end
+		end
+	end
+
+	if not countFolder then
+		return nil
+	end
+
+	return getPositioningSet(countFolder)
 end
 
 local function getSlotNodeCFrame(nodes: {PositioningNode}, slotIndex: number): CFrame?
@@ -1210,19 +1231,11 @@ function module:getFallbackAnchorCFrame(rootPart: BasePart, useFrontPole: boolea
 end
 
 function module:getAnchorPosition(rootPart: BasePart, useFrontPole: boolean?): Vector3
-	local idleSet, aimingSet = getGunPositioningData()
-	if not idleSet and not aimingSet then
-		return self:getFallbackAnchorCFrame(rootPart, useFrontPole).Position
-	end
-
-	local idleLocalCFrame = getSlotLocalCFrame(idleSet, self.slotIndex)
-	local aimingLocalCFrame = getSlotLocalCFrame(aimingSet, self.slotIndex)
-	local placement = getAnchorPlacement(rootPart, useFrontPole)
-
-	-- Prefer Aiming; fall back to Idle.
-	local selectedLocalCFrame = aimingLocalCFrame or idleLocalCFrame
-	if selectedLocalCFrame then
-		return transformAnchorLocalPosition(placement, selectedLocalCFrame.Position)
+	local positioningSet = getGunPositioningData(self.slotTotal)
+	local localCFrame = getSlotLocalCFrame(positioningSet, self.slotIndex)
+	if localCFrame then
+		local placement = getAnchorPlacement(rootPart, useFrontPole)
+		return transformAnchorLocalPosition(placement, localCFrame.Position)
 	end
 
 	return self:getFallbackAnchorCFrame(rootPart, useFrontPole).Position

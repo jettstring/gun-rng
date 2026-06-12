@@ -12,18 +12,21 @@ local SkillDefinitions = require(ReplicatedStorage.Util.Skills.SkillDefinitions)
 local Gigantix = require(ReplicatedStorage.Packages.Gigantix)
 local Spr = require(ReplicatedStorage.Packages.Spr)
 local SoundPool = require(ReplicatedStorage.Packages.SoundPool)
-local UIsfx = SoundService:WaitForChild("UI")
+local UIsfx = SoundService:WaitForChild("UISounds")
 
 type Skill = SkillTree.Skill
 
 local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui") :: PlayerGui
+local playerGui = player.PlayerGui
 local gameAssets = ReplicatedStorage:WaitForChild("GameAssets")
 local notificationAssets = gameAssets:WaitForChild("NotificationAssets")
 local ScreenElements = playerGui:WaitForChild("ScreenElements")
 local hotbarFrame = ScreenElements:WaitForChild("Hotbar")
 local openUpgradesButton = hotbarFrame:WaitForChild("UpgradeButton") :: GuiButton
 local counterBadgeTemplate = notificationAssets:WaitForChild("CounterBadge") :: ImageLabel
+
+local ScreenElements = playerGui:WaitForChild("ScreenElements")
+local upgradeButton = ScreenElements.Hotbar.UpgradeButton
 
 local upgradeGui = playerGui:WaitForChild("UpgradeGui") :: ScreenGui
 local upgradeGuiHotbar = upgradeGui:WaitForChild("Hotbar")
@@ -1544,17 +1547,66 @@ function SkillTreeController:ShowSkillTree(): ()
 		pan = Vector2.zero
 		refreshTree(true)
 	end
+	
+	
+	-- Fire Onboarding Step
+	local onboardingController = self.Controllers.OnboardingController
+	if onboardingController.OnboardingComplete == false then
+		onboardingController:OnGameEvent("open_upgrades")
+	end
 end
 
 function SkillTreeController:HideSkillTree(): ()
 	hoveredTooltipSkillId = nil
 	skillInfoFrame.Visible = false
 	self.Controllers.UIController:CloseFrames()
+	
+	-- Fire Onboarding Step
+	local onboardingController = self.Controllers.OnboardingController
+	if onboardingController.OnboardingComplete == false then
+		onboardingController:OnGameEvent("close_upgrades")
+	end
+end
+
+local function _bindOnboardingSteps()
+	local onboardingController = SkillTreeController.Controllers.OnboardingController
+
+	-- Open upgrades
+	onboardingController.StepEventFunctions["open_upgrades"] = function()
+		onboardingController:ShowHighlightStroke(upgradeButton, "Flash")
+		onboardingController:ShowPointerHand(upgradeButton, 180)
+	end
+
+
+	-- unlock auto roll
+	onboardingController.StepEventFunctions["unlock_auto_roll"] = function()
+		local autoRoll = tree:GetSkill("Auto Roll")
+		if autoRoll and autoRoll.owned then
+			onboardingController:OnGameEvent("unlock_auto_roll")
+			return
+		end
+
+		local node = renderedNodesBySkillId["Auto Roll"]
+		if node then
+			onboardingController:ShowHighlightStroke(node, "Flash")
+			onboardingController:ShowPointerHand(node, 180)
+		end
+	end
+
+	-- Close backpack
+	onboardingController.StepEventFunctions["close_upgrades"] = function()
+		onboardingController:ShowHighlightStroke(hideUpgradesButton, "Flash")
+		onboardingController:ShowPointerHand(hideUpgradesButton, 225)
+	end
+
+
 end
 
 function SkillTreeController:Init(controllers)
 	self.Controllers = controllers
 	buildParentLookup()
+	_bindOnboardingSteps()
+	
 	skillTreeContainer.Active = true
 	skillTreeContainer.ClipsDescendants = true
 	skillButtonTemplate.Visible = false

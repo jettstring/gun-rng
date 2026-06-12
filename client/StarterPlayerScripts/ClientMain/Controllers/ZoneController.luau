@@ -43,7 +43,6 @@ local watchedWallFolders = {} :: { [Folder]: Instance }
 local wallFolderConnections = {} :: { [Folder]: RBXScriptConnection }
 local boundUnlockWalls = setmetatable({}, { __mode = "k" }) :: { [Model]: boolean }
 local pendingButtons = setmetatable({}, { __mode = "k" }) :: { [GuiButton]: boolean }
-local originalWallParts = setmetatable({}, { __mode = "k" }) :: { [BasePart]: { transparency: number, canCollide: boolean } }
 
 --------------------------------------------------
 -- VARIABLES --
@@ -54,6 +53,8 @@ local BUTTON_DAMPING_RATIO = 0.75
 local BUTTON_FREQUENCY = 6
 local ZONES_WAIT_TIMEOUT = 10
 local DOOR_OPEN_DISTANCE = 50
+local ORIGINAL_TRANSPARENCY_ATTR = "ZoneOriginalTransparency"
+local ORIGINAL_CAN_COLLIDE_ATTR = "ZoneOriginalCanCollide"
 local UNLOCK_SOUND_ID = "rbxassetid://92913943199420"
 local UNLOCK_SOUND_NAME = "ZoneUnlockSound"
 local UNLOCK_SOUND_VOLUME = 0.7
@@ -232,21 +233,37 @@ local function setUnlockWallHidden(unlockWall: Model?, hidden: boolean)
 	for _, descendant in unlockWall:GetDescendants() do
 		if descendant:IsA("BasePart") then
 			if hidden then
-				-- store original properties so they can be restored later
-				if not originalWallParts[descendant] then
-					originalWallParts[descendant] = {
-						transparency = descendant.Transparency,
-						canCollide = descendant.CanCollide,
-					}
+				-- cache originals as attributes (they survive GC, unlike a weak table)
+				-- so a rebirth minutes later can still restore them
+				if descendant:GetAttribute(ORIGINAL_TRANSPARENCY_ATTR) == nil then
+					descendant:SetAttribute(ORIGINAL_TRANSPARENCY_ATTR, descendant.Transparency)
+					descendant:SetAttribute(ORIGINAL_CAN_COLLIDE_ATTR, descendant.CanCollide)
 				end
 
 				descendant.Transparency = 1
 				descendant.CanCollide = false
 			else
-				local original = originalWallParts[descendant]
-				if original then
-					descendant.Transparency = original.transparency
-					descendant.CanCollide = original.canCollide
+				local transparency = descendant:GetAttribute(ORIGINAL_TRANSPARENCY_ATTR)
+				local canCollide = descendant:GetAttribute(ORIGINAL_CAN_COLLIDE_ATTR)
+				if typeof(transparency) == "number" then
+					descendant.Transparency = transparency
+				end
+				if typeof(canCollide) == "boolean" then
+					descendant.CanCollide = canCollide
+				end
+			end
+		elseif descendant:IsA("Decal") then
+			-- decals have Transparency but no CanCollide
+			if hidden then
+				if descendant:GetAttribute(ORIGINAL_TRANSPARENCY_ATTR) == nil then
+					descendant:SetAttribute(ORIGINAL_TRANSPARENCY_ATTR, descendant.Transparency)
+				end
+
+				descendant.Transparency = 1
+			else
+				local transparency = descendant:GetAttribute(ORIGINAL_TRANSPARENCY_ATTR)
+				if typeof(transparency) == "number" then
+					descendant.Transparency = transparency
 				end
 			end
 		elseif descendant:IsA("SurfaceGui") then
@@ -545,6 +562,24 @@ local function bindZonesFolder()
 			disconnectZoneModel(child)
 		end
 	end)
+end
+
+local function _bindOnboardingSteps()
+	local onboardingController = ZoneController.Controllers.OnboardingController
+
+	onboardingController.StepEventFunctions["unlock_zone_2"] = function()
+		local desertOrder = ZoneDefinitions.Desert.order
+		local currentZone = player:GetAttribute("CurrentZone")
+		if typeof(currentZone) ~= "number" then
+			currentZone = 1 -- mirrors getCurrentZone's default
+		end
+
+		if currentZone >= desertOrder then
+			onboardingController:OnGameEvent("unlock_zone_2")
+			return
+		end
+	end
+
 end
 
 --------------------------------------------------

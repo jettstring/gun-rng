@@ -16,9 +16,9 @@ local remotes = {}
 --------------------------------------------------
 -- STATE --
 --------------------------------------------------
-local Service = {}
-Service.Services = {}
-Service.Signals = {}
+local ServiceName = {}
+ServiceName.Services = {}
+ServiceName.Signals = {}
 
 --------------------------------------------------
 -- VARIABLES --
@@ -38,7 +38,7 @@ end
 -- PUBLIC FUNCTIONS --
 --------------------------------------------------
 
-function Service:PublicFoo()
+function ServiceName:PublicFoo()
 
 end
 
@@ -46,14 +46,14 @@ end
 -- MAIN --
 --------------------------------------------------
 
-function Service:Init(services)
+function ServiceName:Init(services)
 	self.Services = services
 
 end
 
-function Service:Start()
+function ServiceName:Start()
 
 end
 
 
-return Service
+return ServiceName

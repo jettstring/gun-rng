@@ -129,7 +129,7 @@ local function removePlayerIgnoreTags(player: Player)
 	end
 end
 
-local function tagMapPartsAsIgnored(zoneModel: Instance)
+local function tagMapParts(zoneModel: Instance)
 	local mapFolder = zoneModel:WaitForChild(MAP_FOLDER_NAME) :: Folder
 
 	for _, folderName in MAP_IGNORE_FOLDER_NAMES do
@@ -144,6 +144,8 @@ local function tagMapPartsAsIgnored(zoneModel: Instance)
 			end
 		end
 	end
+	
+
 end
 
 local function registerZoneModel(zoneModel: Instance)
@@ -174,8 +176,20 @@ local function registerZoneModel(zoneModel: Instance)
 			part.CanCollide = false
 		end
 	end
+	
+	local floorFolder = zoneModel:WaitForChild("Floor") :: Folder
+	if not floorFolder then
+		print("CANNOT FIND FLOOR FOLDER: ", zoneModel.Name)
+		return
+	end
+	for _, descendant in floorFolder:GetDescendants() do
+		if descendant:IsA("BasePart") then
+			CollectionService:AddTag(descendant, "Floor")
+		end
+	end
+	
 
-	tagMapPartsAsIgnored(zoneModel)
+	tagMapParts(zoneModel)
 
 	local wallFolder = logicParts:FindFirstChild(WALL_FOLDER_NAME) :: Folder?
 	local unlockWall = if wallFolder then wallFolder:FindFirstChild(UNLOCK_WALL_MODEL_NAME) :: Model? else nil
@@ -405,6 +419,10 @@ function ZoneService:UnlockZone(player: Player, zone: any): UnlockZoneResult
 			zoneName = zoneContext.definition.label,
 			price = price,
 		})
+	end
+	
+	if requestedZoneOrder == 2 then
+		ZoneService.Services.OnboardingService:OnGameEvent(player, "unlock_zone_2")
 	end
 
 	return {

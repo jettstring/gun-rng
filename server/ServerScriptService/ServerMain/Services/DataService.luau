@@ -35,10 +35,10 @@ DataService.Signals = {
 }
 
 DataService.MainKey = "DEV-15"
-DataService.PurchaseKey = "PURCHASES-01"
+DataService.PurchaseKey = "DEV-PURCHASES-01"
 
 DataService.DATA_CONFIG = {
-	Mock = true, 
+	Mock = false, 
 }
 
 DataService.PlayerStore = ProfileStore.New(DataService.MainKey, PROFILE_TEMPLATE)
@@ -122,6 +122,7 @@ local function _PlayerAdded(player: Player)
 
 			if RunService:IsStudio() then
 				print("PROFILE: ", profile.Data)
+				print("PURCHASE PROFILE: ", purchaseProfile.Data)
 			end
 			
 
@@ -276,6 +277,24 @@ end
 
 function DataService:IncrementPlaytimePoints(player: Player, amount: number, source: string?, suppressClientEffects: boolean?): string
 	return self:IncrementCurrency(player, "PlaytimePoints", amount, source, suppressClientEffects)
+end
+
+function DataService:EnemyKilled(player: Player, enemyType: string)
+	local profile = self.Profiles[player]
+	if not profile then
+		warn("[EnemyKilled] No profile found for player:", player.Name)
+		return
+	end
+
+	local stats = profile.Data.Stats
+	stats.EnemiesKilled += 1
+
+	local perTypeKey = `{enemyType}EnemiesKilled`
+	if typeof(stats[perTypeKey]) == "number" then
+		stats[perTypeKey] += 1
+	else
+		warn(`[EnemyKilled] Unknown enemy type "{enemyType}" for {player.Name}`)
+	end
 end
 
 
